@@ -1,0 +1,55 @@
+{"messages":[
+  {"role":"system","content":"You are TAD-Agent. Output ONE valid JSON object only. Use SI units. Use ONLY the allowed actions."},
+  {"role":"user","content":"Available actions: {\"available_actions\":[{\"action\":\"levels.create\",\"args\":[\"name\",\"elevation\"]}]}\nContext:{\"levels\":[]}\nUser request: \"Crea un nivel llamado L1 a 0.00 m\""},
+  {"role":"assistant","content":"{\"version\":\"tad-dsl/0.2\",\"context\":{\"revit_version\":\"2025\",\"units\":\"SI\"},\"plan\":[{\"action\":\"levels.create\",\"args\":{\"name\":\"L1\",\"elevation\":0.0}}]}"}
+]}
+{"messages":[
+  {"role":"system","content":"You are TAD-Agent. Output ONE valid JSON object only. Use SI units. Use ONLY the allowed actions."},
+  {"role":"user","content":"Available actions: {\"available_actions\":[{\"action\":\"levels.create\",\"args\":[\"name\",\"elevation\"]}]}\nContext:{\"levels\":[\"L1\"]}\nUser request: \"Create a level named Level 02 at 3.2 m\""},
+  {"role":"assistant","content":"{\"version\":\"tad-dsl/0.2\",\"context\":{\"revit_version\":\"2025\",\"units\":\"SI\"},\"plan\":[{\"action\":\"levels.create\",\"args\":{\"name\":\"Level 02\",\"elevation\":3.2}}]}"}
+]}
+{"messages":[
+  {"role":"system","content":"You are TAD-Agent. Output ONE valid JSON object only. Use SI units. Use ONLY the allowed actions."},
+  {"role":"user","content":"Available actions: {\"available_actions\":[{\"action\":\"grids.create_linear\",\"args\":[\"name\",\"start\",\"end\"]}]}\nContext:{\"levels\":[\"L1\",\"Level 02\"]}\nUser request: \"Create grid A from (-10,0,0) to (10,0,0)\""},
+  {"role":"assistant","content":"{\"version\":\"tad-dsl/0.2\",\"context\":{\"revit_version\":\"2025\",\"units\":\"SI\"},\"plan\":[{\"action\":\"grids.create_linear\",\"args\":{\"name\":\"A\",\"start\":[-10.0,0.0,0.0],\"end\":[10.0,0.0,0.0]}}]}"}
+]}
+{"messages":[
+  {"role":"system","content":"You are TAD-Agent. Output ONE valid JSON object only. Use SI units. Use ONLY the allowed actions."},
+  {"role":"user","content":"Available actions: {\"available_actions\":[{\"action\":\"grids.create_linear\",\"args\":[\"name\",\"start\",\"end\"]}]}\nContext:{\"levels\":[\"L1\"]}\nUser request: \"Crea la retícula B desde (0,-8,0) hasta (0,8,0)\""},
+  {"role":"assistant","content":"{\"version\":\"tad-dsl/0.2\",\"context\":{\"revit_version\":\"2025\",\"units\":\"SI\"},\"plan\":[{\"action\":\"grids.create_linear\",\"args\":{\"name\":\"B\",\"start\":[0.0,-8.0,0.0],\"end\":[0.0,8.0,0.0]}}]}"}
+]}
+{"messages":[
+  {"role":"system","content":"You are TAD-Agent. Output ONE valid JSON object only. Use SI units. Use ONLY the allowed actions."},
+  {"role":"user","content":"Available actions: {\"available_actions\":[{\"action\":\"walls.create_linear\",\"args\":[\"start\",\"end\",\"height\",\"level\",\"type\",\"structural\"]}]}\nContext:{\"levels\":[\"L1\",\"Level 02\"],\"wall_types\":[\"Generic - 200mm\"]}\nUser request: \"Draw a wall on L1 from (0,0,0) to (10,0,0), height 3.0 m, type Generic - 200mm, non-structural\""},
+  {"role":"assistant","content":"{\"version\":\"tad-dsl/0.2\",\"context\":{\"revit_version\":\"2025\",\"units\":\"SI\"},\"plan\":[{\"action\":\"walls.create_linear\",\"args\":{\"start\":[0.0,0.0,0.0],\"end\":[10.0,0.0,0.0],\"height\":3.0,\"level\":\"L1\",\"type\":\"Generic - 200mm\",\"structural\":false}}]}"}
+]}
+{"messages":[
+  {"role":"system","content":"You are TAD-Agent. Output ONE valid JSON object only. Use SI units. Use ONLY the allowed actions."},
+  {"role":"user","content":"Available actions: {\"available_actions\":[{\"action\":\"walls.create_linear\",\"args\":[\"start\",\"end\",\"height\",\"level\",\"type\",\"structural\"]}]}\nContext:{\"levels\":[\"L1\"],\"wall_types\":[\"Generic - 150mm\",\"Generic - 200mm\"]}\nUser request: \"Crea un muro en L1 de (2,2,0) a (2,12,0) altura 2.7 m tipo Generic - 150mm estructural\""},
+  {"role":"assistant","content":"{\"version\":\"tad-dsl/0.2\",\"context\":{\"revit_version\":\"2025\",\"units\":\"SI\"},\"plan\":[{\"action\":\"walls.create_linear\",\"args\":{\"start\":[2.0,2.0,0.0],\"end\":[2.0,12.0,0.0],\"height\":2.7,\"level\":\"L1\",\"type\":\"Generic - 150mm\",\"structural\":true}}]}"}
+]}
+{"messages":[
+  {"role":"system","content":"You are TAD-Agent. Output ONE valid JSON object only. Use SI units. Use ONLY the allowed actions."},
+  {"role":"user","content":"Available actions: {\"available_actions\":[{\"action\":\"views.create_plan\",\"args\":[\"level_name\",\"discipline\"]}]}\nContext:{\"levels\":[\"L1\",\"Level 02\"]}\nUser request: \"Create a plan view for L1 (Architectural)\""},
+  {"role":"assistant","content":"{\"version\":\"tad-dsl/0.2\",\"context\":{\"revit_version\":\"2025\",\"units\":\"SI\"},\"plan\":[{\"action\":\"views.create_plan\",\"args\":{\"level_name\":\"L1\",\"discipline\":\"Architectural\"}}]}"}
+]}
+{"messages":[
+  {"role":"system","content":"You are TAD-Agent. Output ONE valid JSON object only. Use SI units. Use ONLY the allowed actions."},
+  {"role":"user","content":"Available actions: {\"available_actions\":[{\"action\":\"levels.create\",\"args\":[\"name\",\"elevation\"]},{\"action\":\"views.create_plan\",\"args\":[\"level_name\",\"discipline\"]}]}\nContext:{\"levels\":[]}\nUser request: \"Crea el nivel PB a 0.00 m y su vista de plano arquitectónica\""},
+  {"role":"assistant","content":"{\"version\":\"tad-dsl/0.2\",\"context\":{\"revit_version\":\"2025\",\"units\":\"SI\"},\"plan\":[{\"action\":\"levels.create\",\"args\":{\"name\":\"PB\",\"elevation\":0.0}},{\"action\":\"views.create_plan\",\"args\":{\"level_name\":\"PB\",\"discipline\":\"Architectural\"}}]}"}
+]}
+{"messages":[
+  {"role":"system","content":"You are TAD-Agent. Output ONE valid JSON object only. Use SI units. Use ONLY the allowed actions."},
+  {"role":"user","content":"Available actions: {\"available_actions\":[{\"action\":\"grids.create_linear\",\"args\":[\"name\",\"start\",\"end\"]},{\"action\":\"walls.create_linear\",\"args\":[\"start\",\"end\",\"height\",\"level\",\"type\",\"structural\"]}]}\nContext:{\"levels\":[\"L1\"],\"wall_types\":[\"Generic - 200mm\"]}\nUser request: \"Create grids A(-10,0,0)-(10,0,0) and B(0,-10,0)-(0,10,0); then a 4 m high wall on L1 from (-5,0,0) to (5,0,0), type Generic - 200mm\""},
+  {"role":"assistant","content":"{\"version\":\"tad-dsl/0.2\",\"context\":{\"revit_version\":\"2025\",\"units\":\"SI\"},\"plan\":[{\"action\":\"grids.create_linear\",\"args\":{\"name\":\"A\",\"start\":[-10.0,0.0,0.0],\"end\":[10.0,0.0,0.0]}},{\"action\":\"grids.create_linear\",\"args\":{\"name\":\"B\",\"start\":[0.0,-10.0,0.0],\"end\":[0.0,10.0,0.0]}},{\"action\":\"walls.create_linear\",\"args\":{\"start\":[-5.0,0.0,0.0],\"end\":[5.0,0.0,0.0],\"height\":4.0,\"level\":\"L1\",\"type\":\"Generic - 200mm\",\"structural\":false}}]}"}
+]}
+{"messages":[
+  {"role":"system","content":"You are TAD-Agent. Output ONE valid JSON object only. Use SI units. Use ONLY the allowed actions."},
+  {"role":"user","content":"Available actions: {\"available_actions\":[{\"action\":\"levels.create\",\"args\":[\"name\",\"elevation\"]},{\"action\":\"grids.create_linear\",\"args\":[\"name\",\"start\",\"end\"]}]}\nContext:{\"levels\":[\"L1\"]}\nUser request: \"Crear nivel L2 a 3.00 m y una retícula C de ( -8, -8, 0 ) a ( -8, 8, 0 )\""},
+  {"role":"assistant","content":"{\"version\":\"tad-dsl/0.2\",\"context\":{\"revit_version\":\"2025\",\"units\":\"SI\"},\"plan\":[{\"action\":\"levels.create\",\"args\":{\"name\":\"L2\",\"elevation\":3.0}},{\"action\":\"grids.create_linear\",\"args\":{\"name\":\"C\",\"start\":[-8.0,-8.0,0.0],\"end\":[-8.0,8.0,0.0]}}]}"}
+]}
+{"messages":[
+  {"role":"system","content":"You are TAD-Agent. Output ONE valid JSON object only. Use SI units. Use ONLY the allowed actions."},
+  {"role":"user","content":"Available actions: {\"available_actions\":[{\"action\":\"views.create_plan\",\"args\":[\"level_name\",\"discipline\"]}]}\nContext:{\"levels\":[\"PB\",\"L1\",\"L2\"]}\nUser request: \"Crear vista de plano para L2 de disciplina Arquitectura\""},
+  {"role":"assistant","content":"{\"version\":\"tad-dsl/0.2\",\"context\":{\"revit_version\":\"2025\",\"units\":\"SI\"},\"plan\":[{\"action\":\"views.create_plan\",\"args\":{\"level_name\":\"L2\",\"discipline\":\"Architectural\"}}]}"}
+]}
