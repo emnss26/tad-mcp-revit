@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TAD Plan",
+  "type": "object",
+  "required": ["version", "context", "plan"],
+  "properties": {
+    "version": { "type": "string", "const": "tad-dsl/0.2" },
+    "context": {
+      "type": "object",
+      "required": ["revit_version", "units"],
+      "properties": {
+        "revit_version": { "type": "string" },
+        "units": { "type": "string", "enum": ["SI", "IP"] },
+        "dry_run": { "type": "boolean" },
+        "max_elements": { "type": "integer" },
+        "view_scope": { "type": "string", "enum": ["Active", "Named", "Any"] }
+      },
+      "additionalProperties": true
+    },
+    "plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["action", "args"],
+        "properties": {
+          "action": { "type": "string" },
+          "args": { "type": "object", "additionalProperties": true },
+          "as": { "type": ["string", "null"] }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
