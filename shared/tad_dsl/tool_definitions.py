@@ -3,9 +3,9 @@ from typing import Dict, Any
 
 # importa los módulos por disciplina
 from .core   import ACTION_SCHEMAS as CORE
-from .arch   import ACTION_SCHEMAS as ARCH
-from .struct import ACTION_SCHEMAS as STRUCT
-from .mep    import ACTION_SCHEMAS as MEP
+from .tools.arch   import ACTION_SCHEMAS as ARCH
+from .tools.struct import ACTION_SCHEMAS as STRUCT
+from .tools.mep    import ACTION_SCHEMAS as MEP
 
 # merge estable: la clave es el nombre público de la acción (contrato con Bridge)
 ACTION_SCHEMAS: Dict[str, Any] = {}
