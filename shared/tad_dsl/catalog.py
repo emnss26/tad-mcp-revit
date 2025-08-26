@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Dict, Any, List
-from .tool_definitions import ACTION_SCHEMAS
+from .tool_definitions import ACTION_SCHEMAS  # <-- solo lee, no exportes nada que reimporte tools
 
 def catalog_summary() -> dict:
     available: List[Dict[str, Any]] = []
@@ -11,5 +11,3 @@ def catalog_summary() -> dict:
         except Exception:
             available.append({"action": action, "args": []})
     return {"available_actions": available}
-
-AVAILABLE_ACTIONS = catalog_summary()["available_actions"]

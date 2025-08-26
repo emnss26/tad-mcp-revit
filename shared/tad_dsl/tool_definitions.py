@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Dict, Any
 
 # importa los módulos por disciplina
-from .core   import ACTION_SCHEMAS as CORE
+from .tools.core   import ACTION_SCHEMAS as CORE
 from .tools.arch   import ACTION_SCHEMAS as ARCH
 from .tools.struct import ACTION_SCHEMAS as STRUCT
 from .tools.mep    import ACTION_SCHEMAS as MEP
