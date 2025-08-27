@@ -1,0 +1,45 @@
+{"prompt":"Crea una vista de planta para el nivel L1 con disciplina Architectural"}
+{"prompt":"Aplica el template de vista \"Coordinación - Arquitectura\" a la vista \"Planta L1\""}
+{"prompt":"Ajusta la escala de la vista \"Planta L1\" a 100"}
+{"prompt":"Crea una sección de coordinación desde (0,0,0) hasta (15,0,0) con nombre SEC-COORD-L1"}
+{"prompt":"Crea una elevación en el punto (5,5,0) hacia el Norte llamada \"Elevación Coordinación Norte\""}
+{"prompt":"Habilita la región de recorte en \"Planta L1\" con un offset de 2.0 m"}
+{"prompt":"Duplica la vista \"Planta L1\" con detalles y nómbrala \"Planta L1 - Detallada\""}
+{"prompt":"Establece el nivel de detalle \"Fine\" en la vista \"SEC-COORD-L1\""}
+{"prompt":"Establece la disciplina Mechanical en la vista \"Planta L1 - MEP\""}
+{"prompt":"Aplica la caja de límites \"COORD-L1\" a la vista \"Planta L1 - Detallada\""}
+{"prompt":"Configura underlay con bottom \"Nivel 1\" y top \"Nivel 2\" en la vista \"Planta L1\""}
+{"prompt":"Crea una cuadrícula con nombre A desde (0,0,0) hasta (30,0,0)"}
+{"prompt":"Crea una cuadrícula lineal desde (0,0,0) hasta (0,20,0) con nombre 1"}
+{"prompt":"Crea un nivel llamado L2 a 3.50 m"}
+{"prompt":"Crea un muro lineal de tipo \"Basic Wall\" entre (0,0,0) y (10,0,0) a nivel L1 con altura 3.0 m"}
+{"prompt":"Coloca una puerta tipo \"Single-Flush\" en la pared más cercana al punto (2,0,0) en el nivel L1"}
+{"prompt":"Coloca una ventana tipo \"Fixed 900x1200\" en el muro @prev a la posición (4,0,1.0) con antepecho 0.90 m"}
+{"prompt":"Crea un piso rectangular tipo \"Generic 300mm\" en L1, origen (0,0,0), ancho 8, profundidad 6 m"}
+{"prompt":"Crea un cielo raso rectangular tipo \"ACT 600x600\" en L1, origen (0,0,3), ancho 6, profundidad 4 m"}
+{"prompt":"Crea una losa de techo por perímetro en L2 tipo \"Basic Roof\" con contorno [(0,0,6),(10,0,6),(10,8,6),(0,8,6)] y pendiente 10°"}
+{"prompt":"Crea una baranda por ruta con path [(0,0,0),(0,6,0),(5,6,0)] tipo \"Handrail 900\""}
+{"prompt":"Coloca una columna estructural tipo \"Concrete-Rect 400x400\" en (6,3,0) a nivel L1"}
+{"prompt":"Crea una viga tipo \"W-Section\" desde (0,0,3) hasta (6,0,3) en el nivel L1"}
+{"prompt":"Coloca un ducto tipo \"Supply Air\" entre (0,2,3) y (8,2,3) a nivel L1 con diámetro 300 mm"}
+{"prompt":"Coloca una tubería tipo \"Cold Water\" entre (0,-2,0) y (6,-2,0) a nivel L1 con diámetro 50 mm"}
+{"prompt":"Crea un hueco vertical (shaft) con base en Nivel 1 y tope en Nivel 3 y perfil [(2,2,0),(3,2,0),(3,3,0),(2,3,0)]"}
+{"prompt":"Coloca barras de refuerzo de tipo \"Rebar T16\" en @prev con diámetro 16 mm y espaciamiento 200 mm"}
+{"prompt":"Crea una región rellena en la vista \"Planta L1\" con perfil [(1,1,0),(4,1,0),(2.5,3,0)] y relleno \"Solid Red\""}
+{"prompt":"Crea un schedule por categoría \"Doors\" llamado \"Auditoría Puertas\" con campos [\"Mark\",\"Type\",\"Fire Rating\"]"}
+{"prompt":"Actualiza el schedule \"Auditoría Puertas\" ordenando por \"Type\" y filtrando por proyecto (deja definido el contenedor, los filtros los ajustaré luego)"}
+{"prompt":"Coloca el schedule \"Auditoría Puertas\" en la hoja A101 en la posición (0.05,0.05,0)"}
+{"prompt":"Crea la hoja número \"A101\" llamada \"Coordinación Arquitectónica\" con título \"A1 Metric\" y vistas [\"Planta L1 - Detallada\",\"SEC-COORD-L1\"]"}
+{"prompt":"Coloca la vista \"Planta L1 - Detallada\" en la hoja \"A101\" en (0.20,0.15,0)"}
+{"prompt":"Exporta a CSV los elementos con campos [\"Id\",\"Category\",\"Level\",\"Type\"] a \"C:/temp/auditoria_elements.csv\""}
+{"prompt":"Exporta a Excel los elementos con campos [\"Id\",\"Type Name\",\"Workset\"] a \"C:/temp/auditoria_elements.xlsx\" en la hoja \"Auditoría\""}
+{"prompt":"Asigna el parámetro \"FireRating\" con valor \"60\" a los elementos seleccionados"}
+{"prompt":"Cambia la visibilidad de la categoría \"Walls\" a false en la vista \"Planta L1\""}
+{"prompt":"Resalta en color RGB (255,0,0) los elementos seleccionados en la vista activa"}
+{"prompt":"Crea una dimensión lineal en la vista activa entre (0,0,0) y (10,0,0)"}
+{"prompt":"Etiqueta todas las habitaciones del nivel L1"}
+{"prompt":"Crea una fase llamada \"Coordinación\" después de la fase \"New Construction\""}
+{"prompt":"Crea una escalera por tramo con base en L1, tope en L2, línea [(0,0,0),(0,4,0)] y ancho 1.20 m"}
+{"prompt":"Crea un workset con nombres [\"COORD-Arq\",\"COORD-Estr\",\"COORD-MEP\"]"}
+{"prompt":"Sincroniza con el central habilitando compact y relinquish_all"}
+{"prompt":"Establece el filtro de fases \"Show New\" en la vista \"Planta L1\""}

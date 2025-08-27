@@ -1,0 +1,2000 @@
+[
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "levels.create",
+        "args": {
+          "name": "Nivel Azotea",
+          "elevation": 12.5
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "structure.create_column",
+        "args": {
+          "level": "Nivel 1",
+          "type": "Hormigón-Rectangular-Pilar: 450x600mm",
+          "location": {
+            "x": 10.0,
+            "y": 15.0,
+            "z": 0.0
+          },
+          "top_level": "Nivel 4"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "mep.place_duct",
+        "args": {
+          "level": "Planta Nivel 2",
+          "type": "Ducto rectangular predeterminado",
+          "start": {
+            "x": 5.0,
+            "y": 8.0,
+            "z": 2.7
+          },
+          "end": {
+            "x": 12.0,
+            "y": 8.0,
+            "z": 2.7
+          },
+          "diameter_mm": 300
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {
+          "prompt": "Seleccione los muros a los que asignar el comentario.",
+          "category_filter": "Muros",
+          "multi": true
+        }
+      },
+      {
+        "action": "elements.set_parameter",
+        "args": {
+          "source": {
+            "ref": 0
+          },
+          "name": "Comentarios",
+          "value": "Muro resistente al fuego 2 horas"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "annotations.tag_all",
+        "args": {
+          "category": "Ventanas",
+          "view": "Alzado Sur"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "views.duplicate",
+        "args": {
+          "source": "Planta Nivel 1",
+          "mode": "with_detailing",
+          "new_name": "Planta Nivel 1 - Diseño de Iluminación"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "floors.create_rectangular",
+        "args": {
+          "level": "Nivel 1",
+          "type": "Suelo Genérico 150mm",
+          "origin": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "width": 12.0,
+          "depth": 18.5
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "structure.create_beam",
+        "args": {
+          "level": "Nivel 3",
+          "type": "Viga I de Acero: W460x52",
+          "start": {
+            "x": 6.0,
+            "y": 10.0,
+            "z": 6.0
+          },
+          "end": {
+            "x": 12.0,
+            "y": 10.0,
+            "z": 6.0
+          }
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "lighting.place_fixture",
+        "args": {
+          "level": "Nivel 1 Techo",
+          "type": "Luminaria Empotrada: 600x600 277V",
+          "location": {
+            "x": 3.5,
+            "y": 4.0,
+            "z": 2.8
+          }
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {
+          "prompt": "Seleccione el mobiliario a rotar 90 grados."
+        }
+      },
+      {
+        "action": "elements.rotate",
+        "args": {
+          "source": {
+            "ref": 0
+          },
+          "angle_deg": 90.0,
+          "origin": {
+            "x": 5.0,
+            "y": 5.0,
+            "z": 0.0
+          }
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {
+          "prompt": "Seleccione el muro anfitrión.",
+          "category_filter": "Muros"
+        }
+      },
+      {
+        "action": "doors.place_in_wall",
+        "args": {
+          "host": {
+            "ref": 0
+          },
+          "type": "Puerta Simple: 0915 x 2134mm",
+          "location": {
+            "x": 4.5,
+            "y": 0.0,
+            "z": 0.0
+          }
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "schedules.create_by_category",
+        "args": {
+          "name": "Planilla de Columnas Estructurales",
+          "category": "Pilares Estructurales",
+          "fields": [
+            "Marca",
+            "Familia y tipo",
+            "Nivel base",
+            "Nivel superior"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "views.create_section",
+        "args": {
+          "start": {
+            "x": 5.0,
+            "y": -2.0,
+            "z": 0.0
+          },
+          "end": {
+            "x": 5.0,
+            "y": 20.0,
+            "z": 0.0
+          },
+          "name": "Sección Longitudinal A-A"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "mep.place_pipe",
+        "args": {
+          "level": "Sótano 1",
+          "type": "Tubería de PVC C-40",
+          "start": {
+            "x": 2.0,
+            "y": 15.0,
+            "z": -2.0
+          },
+          "end": {
+            "x": 18.0,
+            "y": 15.0,
+            "z": -2.0
+          },
+          "diameter_mm": 100.0
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {
+          "prompt": "Seleccione los objetos para crear una simetría."
+        }
+      },
+      {
+        "action": "elements.mirror",
+        "args": {
+          "source": {
+            "ref": 0
+          },
+          "plane_point": {
+            "x": 20.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "plane_normal": {
+            "x": 1.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "sheets.create_with_views",
+        "args": {
+          "number": "A-201",
+          "name": "ALZADOS",
+          "titleblock_type": "A0 Métrico",
+          "views": [
+            {
+              "name": "Alzado Sur",
+              "location": {
+                "x": 0.25,
+                "y": 0.5,
+                "z": 0.0
+              }
+            },
+            {
+              "name": "Alzado Norte",
+              "location": {
+                "x": 0.75,
+                "y": 0.5,
+                "z": 0.0
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "grids.create_linear",
+        "args": {
+          "start": {
+            "x": 8.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "end": {
+            "x": 8.0,
+            "y": 30.0,
+            "z": 0.0
+          },
+          "name": "3"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {
+          "prompt": "Seleccione las tuberías para visualizar en rojo.",
+          "category_filter": "Tuberías"
+        }
+      },
+      {
+        "action": "graphics.override_color",
+        "args": {
+          "source": {
+            "ref": 0
+          },
+          "rgb": [
+            255,
+            0,
+            0
+          ],
+          "view": "Vista 3D Plomería"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "roofs.create_footprint",
+        "args": {
+          "level": "Nivel Azotea",
+          "type": "Cubierta Genérica 400mm",
+          "perimeter": [
+            { "x": 0, "y": 0, "z": 12.5 },
+            { "x": 15, "y": 0, "z": 12.5 },
+            { "x": 15, "y": 20, "z": 12.5 },
+            { "x": 0, "y": 20, "z": 12.5 }
+          ],
+          "slope": 5.0
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "mep.place_sprinkler",
+        "args": {
+          "level": "Nivel 3 Techo",
+          "type": "Rociador - Montante: K115 68C",
+          "location": {
+            "x": 8.0,
+            "y": 12.0,
+            "z": 2.9
+          }
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "walls.create_linear",
+        "args": {
+          "level": "Level 1",
+          "type": "Basic Wall: Generic - 200mm",
+          "start": { "x": 5.0, "y": 10.0, "z": 0.0 },
+          "end": { "x": 15.0, "y": 10.0, "z": 0.0 },
+          "height": 3.0
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {
+          "prompt": "Select elements to copy."
+        }
+      },
+      {
+        "action": "elements.copy",
+        "args": {
+          "source": { "ref": 0 },
+          "offset": { "x": 0.0, "y": 5.0, "z": 0.0 }
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "views.set_detail_level",
+        "args": {
+          "view": "Level 1 Floor Plan",
+          "level": "Fine"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "structure.create_foundation",
+        "args": {
+          "level": "Level 1",
+          "type": "Isolated Foundation: 1800x1200x450mm",
+          "location": { "x": 6.0, "y": 8.0, "z": 0.0 }
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "mep.place_air_terminal",
+        "args": {
+          "level": "Level 2",
+          "type": "Supply Diffuser: 600x600 Face",
+          "location": { "x": 7.5, "y": 10.5, "z": 2.8 }
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {
+          "prompt": "Select the host wall for the window.",
+          "category_filter": "Walls",
+          "multi": false
+        }
+      },
+      {
+        "action": "windows.place_in_wall",
+        "args": {
+          "host": { "ref": 0 },
+          "type": "Fixed: 0915 x 1220mm",
+          "location": { "x": 10.0, "y": 10.0, "z": 0.9 },
+          "sill_height": 0.9
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "schedules.update_filter_sort",
+        "args": {
+          "schedule_name": "Door Schedule",
+          "sort_by": [
+            { "field": "Level", "descending": false },
+            { "field": "Mark", "descending": false }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": { "prompt": "Select the first element to join." }
+      },
+      {
+        "action": "ui.prompt_for_selection",
+        "args": { "prompt": "Select the second element to join." }
+      },
+      {
+        "action": "elements.join",
+        "args": {
+          "a": { "ref": 0 },
+          "b": { "ref": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "phases.create",
+        "args": {
+          "name": "Phase 2 - Interior Fit-out",
+          "order_after": "Phase 1 - Shell and Core"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "railings.create_by_path",
+        "args": {
+          "type": "Railing: 900mm Pipe",
+          "path": [
+            { "x": 2.0, "y": 3.0, "z": 0.0 },
+            { "x": 2.0, "y": 8.0, "z": 0.0 },
+            { "x": 5.0, "y": 8.0, "z": 0.0 }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": { "prompt": "Select concrete host element." }
+      },
+      {
+        "action": "rebar.place",
+        "args": {
+          "host": { "ref": 0 },
+          "rebar_type": "13M",
+          "count": 5,
+          "spacing_mm": 150
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "export.elements_to_csv",
+        "args": {
+          "path": "C:\\temp\\door_export.csv",
+          "fields": ["Mark", "Type", "Width", "Height", "Level"],
+          "include_headers": true,
+          "delimiter": ";"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "mep.place_conduit",
+        "args": {
+          "level": "Level 1",
+          "type": "Conduit without Fittings - RNC SCH 40",
+          "start": { "x": 1.0, "y": 1.0, "z": 2.5 },
+          "end": { "x": 1.0, "y": 9.0, "z": 2.5 },
+          "diameter_mm": 27.0
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "graphics.set_category_visibility",
+        "args": {
+          "category": "Topography",
+          "visible": false,
+          "view": "Site Plan"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {
+          "prompt": "Select the element to array.",
+          "multi": false
+        }
+      },
+      {
+        "action": "arrays.create_linear",
+        "args": {
+          "element_id": { "ref": 0 },
+          "count": 6,
+          "offset": { "x": 1.8, "y": 0.0, "z": 0.0 },
+          "group": true
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "links.reload",
+        "args": {
+          "names": ["Structural_Model.rvt"]
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "openings.create_shaft",
+        "args": {
+          "base_level": "Level 1",
+          "top_level": "Roof",
+          "profile_points": [
+            { "x": 8.0, "y": 8.0, "z": 0.0 },
+            { "x": 10.0, "y": 8.0, "z": 0.0 },
+            { "x": 10.0, "y": 12.0, "z": 0.0 },
+            { "x": 8.0, "y": 12.0, "z": 0.0 }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "annotations.tag_rooms",
+        "args": {
+          "level": "Level 3"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": { "prompt": "Select walls to attach.", "category_filter": "Walls", "multi": true }
+      },
+      {
+        "action": "ui.prompt_for_selection",
+        "args": { "prompt": "Select target roof or floor.", "multi": false }
+      },
+      {
+        "action": "elements.attach_top_base",
+        "args": {
+          "wall_ids": { "ref": 0 },
+          "target_element_id": { "ref": 1 },
+          "attachment_type": "Top"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {
+      "revit_version": "2025",
+      "units": "SI"
+    },
+    "plan": [
+      {
+        "action": "worksets.create",
+        "args": {
+          "names": ["Grids and Levels", "MEP-HVAC", "Facade"]
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {
+          "prompt": "Select a view to apply the template to.",
+          "category_filter": "Views",
+          "multi": false
+        }
+      },
+      {
+        "action": "views.apply_template",
+        "args": {
+          "view": {"ref": 0},
+          "template_name": "Architectural Plan"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "worksharing.synchronize",
+        "args": {
+          "relinquish_all": true,
+          "compact": true
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "schedules.add_calculated_value",
+        "args": {
+          "schedule_name": "Room Schedule",
+          "field_name": "Area (SF)",
+          "formula": "Area / 0.0929"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {
+          "prompt": "Select curtain wall to add grids.",
+          "category_filter": "Walls"
+        }
+      },
+      {
+        "action": "curtain.add_grid",
+        "args": {
+          "wall": {"ref": 0},
+          "direction": "vertical",
+          "offset": 1.5,
+          "justify": "beginning"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "schedules.place_on_sheet",
+        "args": {
+          "sheet_number": "A-101",
+          "schedule_name": "Door Schedule",
+          "location": {"x": 0.5, "y": 0.2, "z": 0.0}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Select a wall to edit its profile."}
+      },
+      {
+        "action": "elements.edit_profile",
+        "args": {
+          "element_id": {"ref": 0},
+          "new_profile_points": [
+            {"x": 0.0, "y": 0.0, "z": 0.0},
+            {"x": 5.0, "y": 0.0, "z": 0.0},
+            {"x": 5.0, "y": 3.0, "z": 0.0},
+            {"x": 3.0, "y": 4.0, "z": 0.0},
+            {"x": 0.0, "y": 3.0, "z": 0.0}
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Select the first wall to trim."}
+      },
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Select the second wall to trim."}
+      },
+      {
+        "action": "elements.trim",
+        "args": {
+          "a": {"ref": 0},
+          "b": {"ref": 1}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "legends.create",
+        "args": {
+          "name": "Wall Types Legend",
+          "scale": 50
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Select first pipe or duct."}
+      },
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Select second pipe or duct."}
+      },
+      {
+        "action": "mep.connect_elements",
+        "args": {
+          "a": {"ref": 0},
+          "b": {"ref": 1}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "stairs.create_by_run",
+        "args": {
+          "base_level": "Level 1",
+          "top_level": "Level 2",
+          "run_width": 1.2,
+          "location_line": "center"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Select the element to array radially."}
+      },
+      {
+        "action": "arrays.create_radial",
+        "args": {
+          "element_id": {"ref": 0},
+          "count": 8,
+          "angle_deg": 360,
+          "center_point": {"x": 10.0, "y": 10.0, "z": 0.0}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "export.elements_to_excel",
+        "args": {
+          "path": "D:\\Exports\\RoomData.xlsx",
+          "sheet_name": "Rooms",
+          "fields": ["Number", "Name", "Area", "Perimeter"],
+          "include_headers": true
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {
+          "prompt": "Select elements to assign to a workset.",
+          "multi": true
+        }
+      },
+      {
+        "action": "elements.set_workset",
+        "args": {
+          "source": {"ref": 0},
+          "workset_name": "Facade Elements"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "views.rename",
+        "args": {
+          "from_": "Copy of Level 1",
+          "to": "Level 1 - Furniture Layout"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "views.create_elevation",
+        "args": {
+          "origin": {"x": 25.0, "y": 15.0, "z": 0.0},
+          "direction": {"x": -1.0, "y": 0.0, "z": 0.0},
+          "name": "West Elevation"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "coordinates.acquire_shared",
+        "args": {
+          "from_link_name": "Site_Model.rvt"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "structure.create_truss",
+        "args": {
+          "level": "Roof Level",
+          "type": "Howe Flat Truss",
+          "line": {
+            "start": {"x": 5.0, "y": 10.0, "z": 9.0},
+            "end": {"x": 20.0, "y": 10.0, "z": 9.0}
+          }
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "regions.create_filled",
+        "args": {
+          "view": "Wall Section Detail",
+          "fill_type": "Concrete",
+          "profile": [
+            {"x": 0.1, "y": 0.2, "z": 0.0},
+            {"x": 0.3, "y": 0.2, "z": 0.0},
+            {"x": 0.3, "y": 0.5, "z": 0.0},
+            {"x": 0.1, "y": 0.5, "z": 0.0}
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "views.set_underlay",
+        "args": {
+          "view": "Level 2 Floor Plan",
+          "bottom": "Level 1",
+          "top": "Level 2",
+          "orientation": "look_down"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "links.bind",
+        "args": {
+          "name": "MEP_Model_Consultant.rvt",
+          "as_attached": false
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "schedules.create_by_category",
+        "args": {
+          "name": "Tabla de Planificación de Pisos",
+          "category": "Pisos",
+          "fields": ["Nivel", "Tipo", "Área", "Perímetro"]
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "views.set_discipline",
+        "args": {
+          "view": "Level 1 - HVAC Plan",
+          "discipline": "Mechanical"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Selecciona las columnas para cambiar su material.", "category_filter": "Pilares Estructurales", "multi": true}
+      },
+      {
+        "action": "elements.set_parameter",
+        "args": {
+          "source": {"ref": 0},
+          "name": "Material estructural",
+          "value": "Concreto, Premezclado"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Select an element to get its bounding box dimensions."}
+      },
+      {
+        "action": "get.bounding_box",
+        "args": {
+          "source": {"ref": 0},
+          "units": "meters"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "grids.create_axis",
+        "args": {
+          "name": "A",
+          "start": {"x": 0.0, "y": 5.0, "z": 0.0},
+          "end": {"x": 30.0, "y": 5.0, "z": 0.0}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "sheets.place_view",
+        "args": {
+          "sheet_number": "S-101",
+          "view_name": "Foundation Plan",
+          "location": {"x": 0.3, "y": 0.4, "z": 0.0}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "mep.place_cabletray",
+        "args": {
+          "level": "Nivel 2",
+          "type": "Charola tipo escalera",
+          "start": {"x": 3.0, "y": 25.0, "z": 3.2},
+          "end": {"x": 15.0, "y": 25.0, "z": 3.2}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "views.set_scale",
+        "args": {
+          "view": "Enlarged Kitchen Plan",
+          "scale": 25
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Selecciona el muro cortina para agregar un montante."}
+      },
+      {
+        "action": "curtain.add_mullion",
+        "args": {
+          "grid_line_id": {"ref": 0},
+          "mullion_type": "Montante rectangular: 50mm x 150mm"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "elements.set_phase",
+        "args": {
+          "created_phase": "New Construction",
+          "demolished_phase": "None"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "rooms.create_at_point",
+        "args": {
+          "level": "Planta Baja",
+          "location": {"x": 7.2, "y": 11.5, "z": 0.0}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ceilings.create_rectangular",
+        "args": {
+          "level": "Level 4",
+          "type": "Acoustic Ceiling Tile 600x600",
+          "origin": {"x": 5.0, "y": 5.0, "z": 2.7},
+          "width": 10.0,
+          "depth": 12.0,
+          "height_offset": 2.7
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Selecciona el elemento a alinear."}
+      },
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Selecciona el elemento de referencia."}
+      },
+      {
+        "action": "elements.align",
+        "args": {
+          "element_to_align_id": {"ref": 0},
+          "target_element_id": {"ref": 1},
+          "alignment": "center"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "links.unload",
+        "args": {
+          "names": ["ARCH_LINK_2025.rvt", "SITE_LINK_2025.rvt"]
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "views.rename_by_regex",
+        "args": {
+          "pattern": "Copy of (.+)",
+          "replace": "\\1 - Copy"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "mep.place_flex_duct",
+        "args": {
+          "level": "Level 3",
+          "type": "Flex Duct - Round",
+          "diameter_mm": 250,
+          "path": [
+            {"x": 10.0, "y": 8.0, "z": 2.9},
+            {"x": 10.5, "y": 8.5, "z": 2.9},
+            {"x": 11.0, "y": 9.5, "z": 2.9}
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_text_input",
+        "args": {
+          "title": "Renombrar Vista",
+          "message": "Introduce el nuevo nombre para la vista:",
+          "default": "Nueva Vista"
+        }
+      },
+      {
+        "action": "views.rename",
+        "args": {
+          "from_": "Sección 1",
+          "to": {"ref": 0}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "structure.create_brace",
+        "args": {
+          "level": "Level 2",
+          "type": "HSS-Round: HSS152.4x6.4",
+          "start": {"x": 5.0, "y": 10.0, "z": 3.0},
+          "end": {"x": 10.0, "y": 15.0, "z": 6.0}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.show_message",
+        "args": {
+          "title": "Proceso Completado",
+          "message": "Se han etiquetado todas las puertas en la vista activa.",
+          "severity": "info"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "dimensions.create_linear",
+        "args": {
+          "view": "Level 1 Floor Plan",
+          "points": [
+            {"x": 5.0, "y": 10.0, "z": 0.0},
+            {"x": 15.0, "y": 10.0, "z": 0.0}
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "families.place_instance",
+        "args": {
+          "level": "Nivel 1",
+          "type": "Escritorio: 1500 x 750mm",
+          "location": {"x": 6.5, "y": 8.3, "z": 0.0}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Select panels to change type.", "category_filter": "Curtain Panels", "multi": true}
+      },
+      {
+        "action": "curtain.replace_panel_type",
+        "args": {
+          "panel_ids": {"ref": 0},
+          "to_type_name": "Glazed"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "views.set_scope_box",
+        "args": {
+          "view": "Nivel 3 - Planta",
+          "scope_box_name": "Torre Central"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "electrical.place_device",
+        "args": {
+          "level": "Level 1",
+          "type": "Duplex Receptacle - Standard",
+          "location": {"x": 7.1, "y": 12.4, "z": 0.4}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "lines.create_model_line",
+        "args": {
+          "level": "Sitio",
+          "start": {"x":-10.0, "y": -5.0, "z": 0.0},
+          "end": {"x": -10.0, "y": 50.0, "z": 0.0}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Select host element for the opening."}
+      },
+      {
+        "action": "openings.create_by_face",
+        "args": {
+          "host_element_id": {"ref": 0},
+          "face_index": 0,
+          "profile_points": [
+            {"x": 2.0, "y": 1.0, "z": 0.0},
+            {"x": 3.0, "y": 1.0, "z": 0.0},
+            {"x": 3.0, "y": 2.5, "z": 0.0},
+            {"x": 2.0, "y": 2.5, "z": 0.0}
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "views.set_phase_filter",
+        "args": {
+          "view": "Nivel 1 - Planta de Demolición",
+          "phase_filter": "Mostrar Anterior + Demo"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "schedules.update_filter_sort",
+        "args": {
+          "schedule_name": "Window Schedule",
+          "filters": [
+            {"field": "Level", "operator": "equals", "value": "Level 2"}
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "views.create_plan",
+        "args": {
+          "level_name": "Mezzanine",
+          "discipline": "Architectural"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Selecciona el primer elemento para cortar."}
+      },
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Selecciona el segundo elemento."}
+      },
+      {
+        "action": "elements.cut",
+        "args": {
+          "a": {"ref": 0},
+          "b": {"ref": 1}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "mep.place_pipe_accessory",
+        "args": {
+          "level": "Basement",
+          "type": "Valve - Gate",
+          "location": {"x": 18.5, "y": 22.1, "z": -2.5}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Select a single object to get its location."}
+      },
+      {
+        "action": "get.element_location",
+        "args": {
+          "source": {"ref": 0}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "views.crop_region",
+        "args": {
+          "view": "Detalle de Conexión Viga-Columna",
+          "enabled": true
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "openings.create_for_mep",
+        "args": {
+          "offset_mm": 50.0,
+          "host_preference": "walls_floors"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Selecciona elementos a los que asignar un parámetro"}
+      },
+      {
+        "action": "get.parameter_value",
+        "args": {
+          "source": {"ref": 0},
+          "name": "Comentarios"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "grids.create_radial",
+        "args": {
+          "center_point": {"x": 50.0, "y": 50.0, "z": 0.0},
+          "number_of_radial_lines": 12,
+          "circular_spacing_deg": 30
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "families.batch_update_from_excel",
+        "args": {
+          "path": "C:\\Project\\Data\\FamilyParameterUpdates.xlsx",
+          "id_field": "Family Name",
+          "sheet": "Door_Parameters"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "mep.place_duct_fitting",
+        "args": {
+          "level": "Nivel 5",
+          "type": "Codo rectangular - Radio normal",
+          "at": {"x": 12.3, "y": 15.6, "z": 3.1}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Select target element to align to."}
+      },
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Select elements to align."}
+      },
+      {
+        "action": "elements.align",
+        "args": {
+          "element_to_align_id": {"ref": 1},
+          "target_element_id": {"ref": 0},
+          "method": "face"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "patterns.create_on_face",
+        "args": {
+          "host_element_id": 12345,
+          "face_index": 3,
+          "family_type_to_place": "Pyramid Panel",
+          "u_spacing": 1.5,
+          "v_spacing": 2.0
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Selecciona las trabes a modificar."}
+      },
+      {
+        "action": "elements.set_parameter",
+        "args": {
+          "source": {"ref": 0},
+          "name": "Justificación Z",
+          "value": "Origen"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "annotations.tag_elements",
+        "args": {
+          "tag_type": "Keynote Tag"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "views.duplicate",
+        "args": {
+          "source": "Level 1",
+          "new_name": "Level 1 - As Dependent",
+          "mode": "as_dependent"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "mep.place_duct_accessory",
+        "args": {
+          "level": "Planta Baja",
+          "type": "Compuerta cortafuego",
+          "at": {"x": 22.0, "y": 18.5, "z": 2.8}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Select structural columns to modify.", "multi": true}
+      },
+      {
+        "action": "elements.set_parameter",
+        "args": {
+          "source": {"ref": 0},
+          "name": "Top Offset",
+          "value": -0.3
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "walls.create_linear",
+        "args": {
+          "level": "Nivel 1",
+          "type": "Muro Básico: Muro de concreto 15cm",
+          "start": {"x": 0.0, "y": 0.0, "z": 0.0},
+          "end": {"x": 10.0, "y": 0.0, "z": 0.0},
+          "height": 3.0,
+          "structural": true
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "elements.copy",
+        "args": {
+          "offset": {"x": 0.0, "y": 0.0, "z": 4.0},
+          "count": 5
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "sheets.create_with_views",
+        "args": {
+          "number": "E-101",
+          "name": "LIGHTING PLAN - LEVEL 1",
+          "titleblock_type": "A1 Metric",
+          "views": [
+            {
+              "name": "Level 1 - Lighting Plan",
+              "location": {"x": 0.4, "y": 0.5, "z": 0.0}
+            },
+            {
+              "name": "Lighting Fixture Schedule",
+              "location": {"x": 0.8, "y": 0.2, "z": 0.0}
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "mep.place_pipe_fitting",
+        "args": {
+          "level": "Sótano",
+          "type": "Te - Reductora - Genérica",
+          "at": {"x": 9.8, "y": 14.2, "z": -3.0}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Select elements to hide in the current view."}
+      },
+      {
+        "action": "graphics.override_color",
+        "args": {
+          "source": {"ref": 0}
+        }
+      }
+    ]
+  }
+]
