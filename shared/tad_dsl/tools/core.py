@@ -208,9 +208,35 @@ class ArgsFamiliesBatchUpdateFromExcel(BaseModel):
     mapping: Dict[str, str] = Field(default_factory=dict, description="param_name -> column_name")
     create_missing: Optional[bool] = False
 
+class DataAggregateArgs(BaseModel):
+    source: dict = Field(description="Referencia al resultado de un paso anterior (ej. de get.parameter_value).")
+    operation: Literal["sum", "count", "average"] = Field(description="Operación a realizar.")
+
+class FamilyRenameTypeArgs(BaseModel):
+    family_type_name: str
+    prefix: Optional[str] = None
+    suffix: Optional[str] = None
+    new_name: Optional[str] = None # Para un renombramiento completo
+
+class ViewCreateTemplateArgs(BaseModel):
+    source_view_name: str
+    new_template_name: str
+
+class ScheduleRenameArgs(BaseModel):
+    from_: str
+    to: str
+
+class GetLinkedFilesArgs(BaseModel):
+    file_type: Literal["cad", "revit", "ifc", "all"] = "all"
+
 # ---- REGISTRO ----------------------------------------------------------------
 ACTION_SCHEMAS: Dict[str, Any] = {
     # GET / UI / EXPORT
+    "schedules.rename": ScheduleRenameArgs,
+    "get.linked_files": GetLinkedFilesArgs,
+    "families.rename_type": FamilyRenameTypeArgs,
+    "views.create_template_from_view": ViewCreateTemplateArgs,
+    "data.aggregate": DataAggregateArgs,
     "get.parameter_value": ArgsGetParameterValue,
     "get.element_location": ArgsGetElementLocation,
     "get.bounding_box":     ArgsGetBoundingBox,

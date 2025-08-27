@@ -7,7 +7,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from agent.core.planner import normalize_plan, canonicalize_plan
+from shared.tad_dsl.validators import normalize_plan, canonicalize_plan
 
 def _load_any(path: str) -> List[Dict[str, Any]]:
     with open(path, "r", encoding="utf-8") as f:
