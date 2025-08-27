@@ -1,0 +1,7 @@
+{"prompt":"Crea un nivel llamado L1 a 0.00 m","context":{},"target":{"version":"tad-dsl/0.2","context":{"revit_version":"2025","units":"SI"},"plan":[{"action":"levels.create","args":{"name":"L1","elevation":0.0}}]}}
+{"prompt":"Crea un nivel L2 a 3.50 m","context":{},"target":{"version":"tad-dsl/0.2","context":{"revit_version":"2025","units":"SI"},"plan":[{"action":"levels.create","args":{"name":"L2","elevation":3.5}}]}}
+{"prompt":"Crea una vista de planta para el nivel L1","context":{},"target":{"version":"tad-dsl/0.2","context":{"revit_version":"2025","units":"SI"},"plan":[{"action":"views.create_plan","args":{"level_name":"L1"}}]}}
+{"prompt":"Coloca una puerta tipo Single-Flush en el muro más cercano al punto (2,0) en L1","context":{},"target":{"version":"tad-dsl/0.2","context":{"revit_version":"2025","units":"SI"},"plan":[
+  {"action":"ui.prompt_for_selection","args":{"category_filter":"Walls","multi":false,"prompt":"Selecciona el muro host"}},
+  {"action":"doors.place_in_wall","args":{"type":"Single-Flush","location":[2.0,0.0,0.0],"host":"$last_selection"}}
+]}}
