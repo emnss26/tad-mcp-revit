@@ -1,0 +1,41 @@
+{"prompt":"Genera un schedule \"Puertas QA\" para la categoría \"Doors\" con campos [\"Mark\",\"Type\",\"Width\",\"Height\",\"Level\"]"}
+{"prompt":"Actualiza el schedule \"Puertas QA\" para ordenar por [ {\"field\":\"Level\",\"descending\":false}, {\"field\":\"Mark\",\"descending\":false} ]"}
+{"prompt":"Crea un schedule \"Muros por tipo\" para la categoría \"Walls\" con campos [\"Type\",\"Length\",\"Area\",\"Volume\"]"}
+{"prompt":"Apaga la categoría \"Imports in Families\" en la vista \"Level 1 Floor Plan\""}
+{"prompt":"En la vista \"Coordinación 3D\", sobreescribe color de las tuberías a rojo (RGB 255,0,0)"}
+{"prompt":"Duplica la vista \"Level 2 Floor Plan\" con detailing y renómbrala \"Level 2 - Coordinación MEP\""}
+{"prompt":"Crea ejes radiales con centro (0,0,0), 6 líneas radiales, 8 concéntricas, separación radial 1.5m, separación angular 15°"}
+{"prompt":"Renombra la vista \"Level 1 Floor Plan\" a \"Arquitectura - Nivel 1\""}
+{"prompt":"Aplica el template \"Arquitectura-Plan\" a la vista \"Arquitectura - Nivel 1\""}
+{"prompt":"Crea sección desde (5,0,0) hasta (5,25,0) llamada \"Sección A-A Auditoría\""}
+{"prompt":"Crea leyenda llamada \"Convenciones Gráficas\" a escala 50"}
+{"prompt":"Coloca el schedule \"Puertas QA\" en la lámina A-201 en (0.2,0.2,0)"}
+{"prompt":"Crea lámina A-201 llamada \"ALZADOS\" con título A0 Métrico y coloca las vistas [\"Alzado Sur\" @ (0.25,0.5,0), \"Alzado Norte\" @ (0.75,0.5,0)]"}
+{"prompt":"Crea worksets [\"Arquitectura\",\"Estructura\",\"MEP-HVAC\",\"Coordinación\"]"}
+{"prompt":"Sincroniza con central con compactado y relinquish de todo"}
+{"prompt":"Adquiere coordenadas compartidas desde el vínculo \"Topografía.rvt\""}
+{"prompt":"Recarga solo el vínculo \"Estructura_Modelo.rvt\""}
+{"prompt":"Descarga todos los vínculos cargados"}
+{"prompt":"Solicita selección de muros y asigna parámetro \"Comments\" con valor \"Revisar colisión con ductos\""}
+{"prompt":"Solicita selección de dos elementos y únelos geométricamente"}
+{"prompt":"Solicita selección de dos elementos y recórtalos mutuamente"}
+{"prompt":"Solicita selección de elemento y crea un array lineal de 8 con offset (1.2,0,0) agrupado"}
+{"prompt":"Solicita selección de elementos y espéralo; después crea copia con offset (0,3,0)"}
+{"prompt":"Crea región rellena con perfil rectangular en vista \"Level 1 Floor Plan\""}
+{"prompt":"Crea vista de planta para el nivel \"Nivel 1\" de disciplina Arquitectura"}
+{"prompt":"En la vista \"Arquitectura - Nivel 1\", establece escala 100"}
+{"prompt":"En la vista \"Coordinación 3D\", habilita crop region con offset (0.5,0.5,0.5)"}
+{"prompt":"Establece underlay en la vista \"Arquitectura - Nivel 1\" con bottom \"Nivel 0\" y top \"Nivel 2\" orientación Plan"}
+{"prompt":"Crea rejilla lineal de (0,0,0) a (0,25,0) llamada \"A\""}
+{"prompt":"Crea rejilla lineal de (0,0,0) a (25,0,0) llamada \"1\""}
+{"prompt":"Solicita selección de muros y adjunta su parte superior al elemento seleccionado (techo) como Top"}
+{"prompt":"Crea schedule \"Vanos en muros\" para categoría \"Windows\" con campos [\"Mark\",\"Type\",\"Sill Height\",\"Level\"]"}
+{"prompt":"Filtra el schedule \"Vanos en muros\" por Level = \"Nivel 1\""}
+{"prompt":"Coloca dispositivo eléctrico \"Tomacorriente Doble\" en (2.5,4.0,0.9) en nivel \"Nivel 1\""}
+{"prompt":"Coloca accesorio de ducto tipo \"Reductor Rectangular\" en nivel \"Nivel 2\" en (6.0,8.0,2.8)"}
+{"prompt":"Crea pasamanos por recorrido de [(2,3,0),(2,8,0),(5,8,0)] con tipo \"Railing: 900mm Pipe\""}
+{"prompt":"Sobrescribe color de \"Structural Columns\" a (0,0,255) en \"Coordinación 3D\""}
+{"prompt":"Crea hueco de instalaciones con base \"Nivel 1\", top \"Techo\", perímetro rectangular de (8,8,0)-(10,12,0)"}
+{"prompt":"Crea patrón en cara: host=elemento seleccionado, tipo fam=\"Panel perforado\", spacing U=1.2 V=0.8, orientación 0°"}
+{"prompt":"Crea roof footprint en \"Nivel Azotea\" tipo \"Cubierta Genérica 300mm\" perímetro rectangular 15x20 con pendiente 5%"}
+{"prompt":"Crea barras de refuerzo tipo 13M, 5 barras, spacing 150mm en el host seleccionado"}

@@ -1996,5 +1996,369 @@
         }
       }
     ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Select the structural column to receive the foundation."}
+      },
+      {
+        "action": "structure.create_foundation",
+        "args": {
+          "level": "Cimentación",
+          "type": "Zapata Aislada: 1500x1500x500mm",
+          "location": {"ref": 0}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "views.apply_template",
+        "args": {
+          "view": "Level 2 - Reflected Ceiling Plan",
+          "template_name": "MEP - Ceiling Plan Template"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "worksharing.synchronize",
+        "args": {
+          "compact": true,
+          "relinquish_all": true
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Select elements to mirror.", "multi": true}
+      },
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Select a line or edge to define the mirror axis."}
+      },
+      {
+        "action": "elements.mirror",
+        "args": {
+          "source": {"ref": 0}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "schedules.add_calculated_value",
+        "args": {
+          "schedule_name": "Tabla de Muros",
+          "field_name": "Costo Estimado",
+          "formula": "(Área / 1) * 850.50",
+          "result_type": "currency"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "railings.create_by_path",
+        "args": {
+          "type": "Handrail - Rectangular",
+          "path": [
+            {"x": 10.0, "y": 15.0, "z": 3.0},
+            {"x": 18.0, "y": 15.0, "z": 3.0}
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Selecciona el muro para colocar la ventana de esquina."}
+      },
+      {
+        "action": "windows.place_in_wall",
+        "args": {
+          "host": {"ref": 0},
+          "type": "Ventana de Esquina: 1200x1500mm",
+          "location": {"x": 0.0, "y": 0.0, "z": 0.9},
+          "sill_height": 0.9
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "graphics.set_category_visibility",
+        "args": {
+          "view": "3D View - Structural",
+          "category": "Walls",
+          "visible": false
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "mep.place_sprinkler",
+        "args": {
+          "level": "Nivel 4 - Plafón",
+          "type": "Rociador Colgante - K80 74C",
+          "location": {"x": 6.0, "y": 8.0, "z": 2.8}
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Select the element for which to get the parameter value."}
+      },
+      {
+        "action": "get.parameter_value",
+        "args": {
+          "source": {"ref": 0},
+          "name": "Mark",
+          "as_number": false
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Selecciona los elementos a demoler."}
+      },
+      {
+        "action": "elements.set_phase",
+        "args": {
+          "source": {"ref": 0},
+          "demolished_phase": "Fase 2 - Demolición"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "coordinates.acquire_shared",
+        "args": {
+          "from_link_name": "Civil_Site_Model.rvt"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "legends.create",
+        "args": {
+          "name": "Simbología Eléctrica",
+          "scale": 100
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Select a concrete beam or column to add rebar."}
+      },
+      {
+        "action": "rebar.place",
+        "args": {
+          "host": {"ref": 0},
+          "rebar_type": "16M",
+          "bar_diameter_mm": 16,
+          "spacing_mm": 200
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ceilings.create_rectangular",
+        "args": {
+          "level": "Nivel 1",
+          "type": "Plafón Compuesto - Tablaroca",
+          "origin": {"x": 2.0, "y": 2.0, "z": 2.6},
+          "width": 8.0,
+          "depth": 12.0
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "export.elements_to_csv",
+        "args": {
+          "path": "C:\\Project_Exports\\structural_columns.csv",
+          "fields": ["Mark", "Type", "Base Level", "Top Level", "Volume"],
+          "source": { "category": "Structural Columns" }
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "ui.prompt_for_selection",
+        "args": {"prompt": "Selecciona un Eje (Grid)."}
+      },
+      {
+        "action": "elements.set_parameter",
+        "args": {
+          "source": {"ref": 0},
+          "name": "Name",
+          "value": "E-1"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "mep.place_conduit",
+        "args": {
+          "level": "Level 1",
+          "type": "EMT",
+          "start": {"x": 20.0, "y": 5.0, "z": 3.5},
+          "end": {"x": 20.0, "y": 15.0, "z": 3.5},
+          "diameter_mm": 21.0
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "structure.create_column",
+        "args": {
+          "level": "Planta Baja",
+          "type": "Columna de Concreto Redonda: 400mm",
+          "location": {"x": 15.0, "y": 20.0, "z": 0.0},
+          "base_offset": 0.0,
+          "top_level": "Azotea",
+          "top_offset": -0.25
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+      {
+        "action": "annotations.tag_all",
+        "args": {
+          "category": "Mechanical Equipment",
+          "view": "Level 3 - Mechanical Plan"
+        }
+      }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+    { "action": "query.elements", "args": { "category": "Mobiliario", "view": "Planta Nivel 1" } },
+    {
+      "action": "actions.for_each",
+      "args": {
+        "input_list": {"ref": 0},
+        "sub_plan": { "action": "graphics.set_category_visibility", "args": {"visible": false} }
+      }
+    }
+    ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+    {
+      "action": "query.elements",
+      "args": {
+        "category": "Muros",
+        "filters": [
+          {"parameter": "Tipo", "operator": "contains", "value": "Concreto"},
+          {"parameter": "Nivel base", "operator": "equals", "value": "Nivel 1"}
+        ]
+      }
+    }
+  ]
+  },
+  {
+    "version": "tad-dsl/0.2",
+    "context": {"revit_version":"2025","units":"SI"},
+    "plan": [
+    {
+      "action": "get.view_by_name",
+      "args": {"name": "Nivel 2 - Plafones"}
+    },
+    {
+      "action": "views.create_plan",
+      "condition": { "ref": 0, "operator": "is_null" },
+      "args": {
+        "level_name": "Nivel 2",
+        "discipline": "Architectural"
+       
+      }
+    }
+  ]
   }
 ]

@@ -1,0 +1,1194 @@
+{
+  "ok": true,
+  "count": 100,
+  "actions": [
+    {
+      "action": "annotations.tag_all",
+      "args": {
+        "required": [
+          "category"
+        ],
+        "optional": [
+          "view"
+        ]
+      }
+    },
+    {
+      "action": "annotations.tag_elements",
+      "args": {
+        "required": [],
+        "optional": [
+          "source",
+          "tag_type",
+          "view"
+        ]
+      }
+    },
+    {
+      "action": "annotations.tag_rooms",
+      "args": {
+        "required": [
+          "level"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "arrays.create_linear",
+      "args": {
+        "required": [
+          "count",
+          "element_id",
+          "offset"
+        ],
+        "optional": [
+          "group",
+          "keep_original"
+        ]
+      }
+    },
+    {
+      "action": "arrays.create_radial",
+      "args": {
+        "required": [
+          "angle_deg",
+          "center_point",
+          "count",
+          "element_id"
+        ],
+        "optional": [
+          "group",
+          "keep_original"
+        ]
+      }
+    },
+    {
+      "action": "ceilings.create_rectangular",
+      "args": {
+        "required": [
+          "depth",
+          "level",
+          "origin",
+          "type",
+          "width"
+        ],
+        "optional": [
+          "height_offset"
+        ]
+      }
+    },
+    {
+      "action": "coordinates.acquire_shared",
+      "args": {
+        "required": [
+          "from_link_name"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "curtain.add_grid",
+      "args": {
+        "required": [
+          "direction",
+          "offset"
+        ],
+        "optional": [
+          "justify",
+          "wall"
+        ]
+      }
+    },
+    {
+      "action": "curtain.add_mullion",
+      "args": {
+        "required": [
+          "grid_line_id"
+        ],
+        "optional": [
+          "mullion_type"
+        ]
+      }
+    },
+    {
+      "action": "curtain.replace_panel_type",
+      "args": {
+        "required": [
+          "to_type_name"
+        ],
+        "optional": [
+          "panel_ids"
+        ]
+      }
+    },
+    {
+      "action": "dimensions.create_linear",
+      "args": {
+        "required": [
+          "points"
+        ],
+        "optional": [
+          "view"
+        ]
+      }
+    },
+    {
+      "action": "doors.place_in_wall",
+      "args": {
+        "required": [
+          "location",
+          "type"
+        ],
+        "optional": [
+          "host"
+        ]
+      }
+    },
+    {
+      "action": "electrical.place_device",
+      "args": {
+        "required": [
+          "level",
+          "location",
+          "type"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "elements.align",
+      "args": {
+        "required": [
+          "element_to_align_id",
+          "target_element_id"
+        ],
+        "optional": [
+          "alignment",
+          "method"
+        ]
+      }
+    },
+    {
+      "action": "elements.attach_top_base",
+      "args": {
+        "required": [
+          "target_element_id"
+        ],
+        "optional": [
+          "attachment_type",
+          "wall_ids"
+        ]
+      }
+    },
+    {
+      "action": "elements.copy",
+      "args": {
+        "required": [
+          "offset"
+        ],
+        "optional": [
+          "count",
+          "source"
+        ]
+      }
+    },
+    {
+      "action": "elements.cut",
+      "args": {
+        "required": [
+          "a",
+          "b"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "elements.edit_profile",
+      "args": {
+        "required": [
+          "element_id",
+          "new_profile_points"
+        ],
+        "optional": [
+          "coordinate_system"
+        ]
+      }
+    },
+    {
+      "action": "elements.join",
+      "args": {
+        "required": [
+          "a",
+          "b"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "elements.mirror",
+      "args": {
+        "required": [
+          "plane_normal",
+          "plane_point"
+        ],
+        "optional": [
+          "source"
+        ]
+      }
+    },
+    {
+      "action": "elements.rotate",
+      "args": {
+        "required": [
+          "angle_deg",
+          "origin"
+        ],
+        "optional": [
+          "axis",
+          "source"
+        ]
+      }
+    },
+    {
+      "action": "elements.set_parameter",
+      "args": {
+        "required": [
+          "name",
+          "value"
+        ],
+        "optional": [
+          "source"
+        ]
+      }
+    },
+    {
+      "action": "elements.set_phase",
+      "args": {
+        "required": [],
+        "optional": [
+          "created_phase",
+          "demolished_phase",
+          "source"
+        ]
+      }
+    },
+    {
+      "action": "elements.set_workset",
+      "args": {
+        "required": [
+          "workset_name"
+        ],
+        "optional": [
+          "source"
+        ]
+      }
+    },
+    {
+      "action": "elements.trim",
+      "args": {
+        "required": [
+          "a",
+          "b"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "export.elements_to_csv",
+      "args": {
+        "required": [
+          "fields",
+          "path"
+        ],
+        "optional": [
+          "delimiter",
+          "include_headers",
+          "source"
+        ]
+      }
+    },
+    {
+      "action": "export.elements_to_excel",
+      "args": {
+        "required": [
+          "fields",
+          "path"
+        ],
+        "optional": [
+          "include_headers",
+          "sheet_name",
+          "source"
+        ]
+      }
+    },
+    {
+      "action": "families.batch_update_from_excel",
+      "args": {
+        "required": [
+          "path"
+        ],
+        "optional": [
+          "create_missing",
+          "id_field",
+          "mapping",
+          "sheet"
+        ]
+      }
+    },
+    {
+      "action": "families.place_instance",
+      "args": {
+        "required": [
+          "level",
+          "location",
+          "type"
+        ],
+        "optional": [
+          "host"
+        ]
+      }
+    },
+    {
+      "action": "floors.create_rectangular",
+      "args": {
+        "required": [
+          "depth",
+          "level",
+          "origin",
+          "type",
+          "width"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "get.bounding_box",
+      "args": {
+        "required": [],
+        "optional": [
+          "source",
+          "units",
+          "view"
+        ]
+      }
+    },
+    {
+      "action": "get.element_location",
+      "args": {
+        "required": [],
+        "optional": [
+          "coordinate_system",
+          "source"
+        ]
+      }
+    },
+    {
+      "action": "get.parameter_value",
+      "args": {
+        "required": [],
+        "optional": [
+          "as_number",
+          "builtin",
+          "name",
+          "source"
+        ]
+      }
+    },
+    {
+      "action": "graphics.override_color",
+      "args": {
+        "required": [
+          "rgb"
+        ],
+        "optional": [
+          "source",
+          "view"
+        ]
+      }
+    },
+    {
+      "action": "graphics.set_category_visibility",
+      "args": {
+        "required": [
+          "category"
+        ],
+        "optional": [
+          "view",
+          "visible"
+        ]
+      }
+    },
+    {
+      "action": "grids.create_axis",
+      "args": {
+        "required": [
+          "end",
+          "name",
+          "start"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "grids.create_linear",
+      "args": {
+        "required": [
+          "end",
+          "start"
+        ],
+        "optional": [
+          "name"
+        ]
+      }
+    },
+    {
+      "action": "grids.create_radial",
+      "args": {
+        "required": [
+          "center_point",
+          "circular_spacing_deg",
+          "number_of_radial_lines"
+        ],
+        "optional": [
+          "naming_prefix",
+          "number_of_circular_lines",
+          "radial_spacing_m",
+          "start_index"
+        ]
+      }
+    },
+    {
+      "action": "legends.create",
+      "args": {
+        "required": [
+          "name"
+        ],
+        "optional": [
+          "scale"
+        ]
+      }
+    },
+    {
+      "action": "levels.create",
+      "args": {
+        "required": [
+          "elevation",
+          "name"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "lighting.place_fixture",
+      "args": {
+        "required": [
+          "level",
+          "location",
+          "type"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "lines.create_model_line",
+      "args": {
+        "required": [
+          "end",
+          "level",
+          "start"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "links.bind",
+      "args": {
+        "required": [
+          "name"
+        ],
+        "optional": [
+          "as_attached"
+        ]
+      }
+    },
+    {
+      "action": "links.reload",
+      "args": {
+        "required": [],
+        "optional": [
+          "all",
+          "names"
+        ]
+      }
+    },
+    {
+      "action": "links.unload",
+      "args": {
+        "required": [],
+        "optional": [
+          "all",
+          "names"
+        ]
+      }
+    },
+    {
+      "action": "mep.connect_elements",
+      "args": {
+        "required": [
+          "a",
+          "b"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "mep.place_air_terminal",
+      "args": {
+        "required": [
+          "level",
+          "location",
+          "type"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "mep.place_cabletray",
+      "args": {
+        "required": [
+          "end",
+          "level",
+          "start",
+          "type"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "mep.place_conduit",
+      "args": {
+        "required": [
+          "end",
+          "level",
+          "start",
+          "type"
+        ],
+        "optional": [
+          "diameter_mm"
+        ]
+      }
+    },
+    {
+      "action": "mep.place_duct",
+      "args": {
+        "required": [
+          "end",
+          "level",
+          "start",
+          "type"
+        ],
+        "optional": [
+          "diameter_mm"
+        ]
+      }
+    },
+    {
+      "action": "mep.place_duct_accessory",
+      "args": {
+        "required": [
+          "at",
+          "level",
+          "type"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "mep.place_duct_fitting",
+      "args": {
+        "required": [
+          "at",
+          "level",
+          "type"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "mep.place_flex_duct",
+      "args": {
+        "required": [
+          "level",
+          "path",
+          "type"
+        ],
+        "optional": [
+          "diameter_mm"
+        ]
+      }
+    },
+    {
+      "action": "mep.place_pipe",
+      "args": {
+        "required": [
+          "end",
+          "level",
+          "start",
+          "type"
+        ],
+        "optional": [
+          "diameter_mm"
+        ]
+      }
+    },
+    {
+      "action": "mep.place_pipe_accessory",
+      "args": {
+        "required": [
+          "level",
+          "location",
+          "type"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "mep.place_pipe_fitting",
+      "args": {
+        "required": [
+          "at",
+          "level",
+          "type"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "mep.place_sprinkler",
+      "args": {
+        "required": [
+          "level",
+          "location",
+          "type"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "openings.create_by_face",
+      "args": {
+        "required": [
+          "face_index",
+          "host_element_id",
+          "profile_points"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "openings.create_for_mep",
+      "args": {
+        "required": [],
+        "optional": [
+          "host_preference",
+          "mep_element_ids",
+          "offset_mm",
+          "sleeve_type"
+        ]
+      }
+    },
+    {
+      "action": "openings.create_shaft",
+      "args": {
+        "required": [
+          "base_level",
+          "profile_points",
+          "top_level"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "patterns.create_on_face",
+      "args": {
+        "required": [
+          "face_index",
+          "family_type_to_place",
+          "host_element_id",
+          "u_spacing",
+          "v_spacing"
+        ],
+        "optional": [
+          "orientation"
+        ]
+      }
+    },
+    {
+      "action": "phases.create",
+      "args": {
+        "required": [
+          "name"
+        ],
+        "optional": [
+          "order_after"
+        ]
+      }
+    },
+    {
+      "action": "railings.create_by_path",
+      "args": {
+        "required": [
+          "path"
+        ],
+        "optional": [
+          "host_stairs",
+          "type"
+        ]
+      }
+    },
+    {
+      "action": "rebar.place",
+      "args": {
+        "required": [
+          "rebar_type"
+        ],
+        "optional": [
+          "bar_diameter_mm",
+          "count",
+          "host",
+          "spacing_mm"
+        ]
+      }
+    },
+    {
+      "action": "regions.create_filled",
+      "args": {
+        "required": [
+          "profile"
+        ],
+        "optional": [
+          "fill_type",
+          "view"
+        ]
+      }
+    },
+    {
+      "action": "roofs.create_footprint",
+      "args": {
+        "required": [
+          "level",
+          "perimeter",
+          "type"
+        ],
+        "optional": [
+          "slope"
+        ]
+      }
+    },
+    {
+      "action": "rooms.create_at_point",
+      "args": {
+        "required": [
+          "level",
+          "location"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "schedules.add_calculated_value",
+      "args": {
+        "required": [
+          "field_name",
+          "formula",
+          "schedule_name"
+        ],
+        "optional": [
+          "result_type"
+        ]
+      }
+    },
+    {
+      "action": "schedules.create_by_category",
+      "args": {
+        "required": [
+          "category",
+          "fields",
+          "name"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "schedules.place_on_sheet",
+      "args": {
+        "required": [
+          "location",
+          "schedule_name",
+          "sheet_number"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "schedules.update_filter_sort",
+      "args": {
+        "required": [
+          "schedule_name"
+        ],
+        "optional": [
+          "filters",
+          "sort_by"
+        ]
+      }
+    },
+    {
+      "action": "sheets.create_with_views",
+      "args": {
+        "required": [
+          "name",
+          "number",
+          "titleblock_type",
+          "views"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "sheets.place_view",
+      "args": {
+        "required": [
+          "location",
+          "sheet_number",
+          "view_name"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "stairs.create_by_run",
+      "args": {
+        "required": [
+          "base_level",
+          "location_line",
+          "run_width",
+          "top_level"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "structure.create_beam",
+      "args": {
+        "required": [
+          "end",
+          "level",
+          "start",
+          "type"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "structure.create_brace",
+      "args": {
+        "required": [
+          "end",
+          "level",
+          "start",
+          "type"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "structure.create_column",
+      "args": {
+        "required": [
+          "level",
+          "location",
+          "type"
+        ],
+        "optional": [
+          "base_offset",
+          "top_level",
+          "top_offset"
+        ]
+      }
+    },
+    {
+      "action": "structure.create_foundation",
+      "args": {
+        "required": [
+          "level",
+          "location",
+          "type"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "structure.create_truss",
+      "args": {
+        "required": [
+          "level",
+          "line",
+          "type"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "ui.prompt_for_selection",
+      "args": {
+        "required": [],
+        "optional": [
+          "category_filter",
+          "multi",
+          "prompt"
+        ]
+      }
+    },
+    {
+      "action": "ui.prompt_for_text_input",
+      "args": {
+        "required": [],
+        "optional": [
+          "allow_empty",
+          "default",
+          "message",
+          "title"
+        ]
+      }
+    },
+    {
+      "action": "ui.show_message",
+      "args": {
+        "required": [
+          "message"
+        ],
+        "optional": [
+          "buttons",
+          "severity",
+          "title"
+        ]
+      }
+    },
+    {
+      "action": "views.apply_template",
+      "args": {
+        "required": [
+          "template_name",
+          "view"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "views.create_elevation",
+      "args": {
+        "required": [
+          "origin"
+        ],
+        "optional": [
+          "direction",
+          "name"
+        ]
+      }
+    },
+    {
+      "action": "views.create_plan",
+      "args": {
+        "required": [
+          "level_name"
+        ],
+        "optional": [
+          "discipline"
+        ]
+      }
+    },
+    {
+      "action": "views.create_section",
+      "args": {
+        "required": [
+          "end",
+          "start"
+        ],
+        "optional": [
+          "name"
+        ]
+      }
+    },
+    {
+      "action": "views.crop_region",
+      "args": {
+        "required": [],
+        "optional": [
+          "enabled",
+          "offset",
+          "view"
+        ]
+      }
+    },
+    {
+      "action": "views.duplicate",
+      "args": {
+        "required": [
+          "source"
+        ],
+        "optional": [
+          "mode",
+          "new_name"
+        ]
+      }
+    },
+    {
+      "action": "views.rename",
+      "args": {
+        "required": [
+          "from_",
+          "to"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "views.rename_by_regex",
+      "args": {
+        "required": [
+          "pattern",
+          "replace"
+        ],
+        "optional": [
+          "scope"
+        ]
+      }
+    },
+    {
+      "action": "views.set_detail_level",
+      "args": {
+        "required": [
+          "level"
+        ],
+        "optional": [
+          "view"
+        ]
+      }
+    },
+    {
+      "action": "views.set_discipline",
+      "args": {
+        "required": [
+          "discipline"
+        ],
+        "optional": [
+          "view"
+        ]
+      }
+    },
+    {
+      "action": "views.set_phase_filter",
+      "args": {
+        "required": [],
+        "optional": [
+          "phase",
+          "phase_filter",
+          "view"
+        ]
+      }
+    },
+    {
+      "action": "views.set_scale",
+      "args": {
+        "required": [
+          "scale"
+        ],
+        "optional": [
+          "view"
+        ]
+      }
+    },
+    {
+      "action": "views.set_scope_box",
+      "args": {
+        "required": [],
+        "optional": [
+          "scope_box_name",
+          "view"
+        ]
+      }
+    },
+    {
+      "action": "views.set_underlay",
+      "args": {
+        "required": [],
+        "optional": [
+          "bottom",
+          "orientation",
+          "top",
+          "view"
+        ]
+      }
+    },
+    {
+      "action": "walls.create_linear",
+      "args": {
+        "required": [
+          "end",
+          "height",
+          "level",
+          "start",
+          "type"
+        ],
+        "optional": [
+          "structural"
+        ]
+      }
+    },
+    {
+      "action": "windows.place_in_wall",
+      "args": {
+        "required": [
+          "location",
+          "type"
+        ],
+        "optional": [
+          "host",
+          "sill_height"
+        ]
+      }
+    },
+    {
+      "action": "worksets.create",
+      "args": {
+        "required": [
+          "names"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "action": "worksharing.synchronize",
+      "args": {
+        "required": [],
+        "optional": [
+          "compact",
+          "relinquish_all"
+        ]
+      }
+    },
+    {
+    "action": "query.elements",
+    "args": {
+        "required": ["category"],
+        "optional": ["view", "filters"]
+    }
+    },
+    {
+    "action": "actions.for_each",
+    "args": {
+        "required": ["input_list", "sub_plan"]
+    }
+    }
+  ]
+}
