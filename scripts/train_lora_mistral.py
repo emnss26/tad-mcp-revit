@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 import os, json, argparse, warnings, re
 from typing import Dict, List, Any
@@ -39,7 +41,6 @@ def build_messages(tokenizer, user_prompt: str, context: Dict[str, Any] | None) 
         sys_txt += "\nAvailable actions:\n" + json.dumps(build_actions_catalog(), ensure_ascii=False)
     if context:
         sys_txt += "\nContext:\n" + json.dumps({"client_context": context}, ensure_ascii=False)
-
     messages = [
         {"role": "system", "content": sys_txt},
         {"role": "user", "content": f"{user_prompt}\nReturn ONLY the JSON object."},
@@ -103,18 +104,18 @@ class DataCollatorForSFT:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--model_id", default=os.environ.get("MODEL_ID", "microsoft/Phi-3-mini-4k-instruct"))
+    ap.add_argument("--model_id", default=os.environ.get("MODEL_ID", "mistralai/Mistral-7B-Instruct-v0.3"))
     ap.add_argument("--train_jsonl", required=True)
     ap.add_argument("--eval_jsonl", default="")
-    ap.add_argument("--out", default="./out/phi3-mcp-lora")
-    ap.add_argument("--seq_len", type=int, default=1024)
+    ap.add_argument("--out", default="./out/mistral7b-mcp-lora")
+    ap.add_argument("--seq_len", type=int, default=768)        # 7B en 16GB: 768 va fino
     ap.add_argument("--epochs", type=int, default=2)
-    ap.add_argument("--lr", type=float, default=2e-4)
+    ap.add_argument("--lr", type=float, default=1.5e-4)
     ap.add_argument("--batch_size", type=int, default=1)
     ap.add_argument("--grad_accum", type=int, default=8)
     ap.add_argument("--fp16", action="store_true")
     ap.add_argument("--bf16", action="store_true")
-    ap.add_argument("--cuda_index", type=int, default=0, help="Índice de GPU a usar (0 o 1).")
+    ap.add_argument("--cuda_index", type=int, default=0, help="Índice de GPU a usar (0..N-1).")
     args = ap.parse_args()
 
     # Selección de GPU explícita
@@ -123,13 +124,16 @@ def main():
     device = torch.device(f"cuda:{args.cuda_index}")
     print(f"[info] usando device {device} ->", torch.cuda.get_device_name(device))
 
-    tok = AutoTokenizer.from_pretrained(args.model_id, trust_remote_code=True)
+    # Token de HF (no lo hardcodees)
+    hf_token = os.environ.get("HUGGING_FACE_TOKEN") or os.environ.get("HF_TOKEN")
+
+    tok = AutoTokenizer.from_pretrained(args.model_id, trust_remote_code=True, token=hf_token)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
 
-    # Ajustes de rendimiento seguros
+    # Rendimiento seguro
     try:
-        torch.backends.cuda.matmul.allow_tf32 = True  # acelera en Ampere/Ada sin perder precisión relevante
+        torch.backends.cuda.matmul.allow_tf32 = True
     except Exception:
         pass
 
@@ -140,12 +144,13 @@ def main():
         torch_dtype=dtype,
         low_cpu_mem_usage=True,
         attn_implementation="eager",   # evita flash-attn en Windows
-        # Sin device_map para no crear meta tensors
+        token=hf_token,
+        # sin device_map para no crear meta tensors
     )
     mdl.to(device)
     mdl.config.use_cache = False
 
-    # LoRA
+    # LoRA (Mistral/LLaMA-style)
     from peft import LoraConfig, get_peft_model
     lora_cfg = LoraConfig(
         r=16, lora_alpha=32, lora_dropout=0.05,
@@ -163,7 +168,6 @@ def main():
             context = example.get("context") or {}
             target_json = parse_target(example)
             sample = build_sample(tok, prompt, context, target_json, tok.eos_token)
-            # truncado simple
             for k in ("input_ids","labels","attention_mask"):
                 sample[k] = sample[k][:args.seq_len]
             return sample
