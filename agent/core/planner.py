@@ -1,8 +1,7 @@
 from __future__ import annotations
 import os, sys, json, re
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
-import difflib
+from typing import Any, Dict, List
 
 import torch
 import psutil
@@ -15,18 +14,21 @@ try:
 except Exception:
     pass
 
-# Evitar fragmentación (si tu build lo soporta; PyTorch avisa si está deprecado)
+# Evitar fragmentación (algunas builds lo ignoran)
 os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True,max_split_size_mb:128")
+os.environ.setdefault("TRANSFORMERS_NO_ADVISORY_WARNINGS", "1")
 
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-# Usamos los schemas REALES para conocer campos válidos
+# Schemas reales (acciones)
 from shared.tad_dsl.tool_definitions import ACTION_SCHEMAS
 
-MODEL_ID = os.environ.get("MODEL_ID", "microsoft/Phi-3-mini-4k-instruct")
-MAX_NEW = int(os.environ.get("TAD_MAX_NEW", "96"))
-DEBUG = os.environ.get("TAD_DEBUG", "") == "1"
+# ───────────────── config ─────────────────
+MODEL_ID    = os.environ.get("MODEL_ID", "microsoft/Phi-3-mini-4k-instruct")
+ADAPTER_DIR = os.environ.get("ADAPTER_DIR", "").strip()  # p.ej.: out/phi3-mcp-lora
+MAX_NEW     = int(os.environ.get("TAD_MAX_NEW", "96"))
+DEBUG       = os.environ.get("TAD_DEBUG", "") == "1"
 
 _tokenizer = None
 _model = None
@@ -43,7 +45,6 @@ def _build_max_memory() -> Dict[Any, str]:
         if env_key in os.environ:
             budget = int(os.environ[env_key])
         else:
-            # 8GB → 4 GiB (conservador). >8GB → ~80% - 1 GiB (mín 6).
             budget = 4 if total_gib <= 8 else max(6, int(total_gib * 0.80) - 1)
         mm[i] = f"{budget}GiB"
     cpu_free_gib = int(psutil.virtual_memory().available / (1024**3)) - 2
@@ -56,32 +57,83 @@ def ensure_loaded():
     global _tokenizer, _model
     if _model is not None:
         return
-    from transformers import AutoTokenizer, AutoModelForCausalLM
-    _tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, trust_remote_code=True)
 
-    if torch.cuda.is_available() and torch.cuda.device_count() >= 1:
-        _model = AutoModelForCausalLM.from_pretrained(
-            MODEL_ID,
-            trust_remote_code=True,
-            torch_dtype=torch.float16,
-            low_cpu_mem_usage=True,
+    from transformers import AutoTokenizer, AutoModelForCausalLM
+    from peft import PeftModel
+
+    base_id = MODEL_ID
+    offload_dir = REPO_ROOT / "offload"
+    offload_dir.mkdir(parents=True, exist_ok=True)
+
+    _tokenizer = AutoTokenizer.from_pretrained(base_id, trust_remote_code=True)
+    if _tokenizer.pad_token is None:
+        _tokenizer.pad_token = _tokenizer.eos_token
+
+    kwargs = dict(
+        trust_remote_code=True,
+        torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
+        low_cpu_mem_usage=True,
+        attn_implementation="eager",
+    )
+    if torch.cuda.is_available():
+        kwargs.update(
             device_map="auto",
             max_memory=_build_max_memory(),
-            offload_folder=str(REPO_ROOT / "offload"),
-            attn_implementation="eager",
+            offload_folder=str(offload_dir),
         )
-    else:
-        _model = AutoModelForCausalLM.from_pretrained(
-            MODEL_ID,
-            trust_remote_code=True,
-            torch_dtype=torch.float32,
-            low_cpu_mem_usage=True,
-        )
-    _model.eval()
+
+    base = AutoModelForCausalLM.from_pretrained(base_id, **kwargs)
+
+    # Aplica LoRA si existe
+    if ADAPTER_DIR and os.path.isdir(ADAPTER_DIR):
+        try:
+            base = PeftModel.from_pretrained(base, ADAPTER_DIR)
+            print("[planner] adapter:", ADAPTER_DIR)
+        except Exception as e:
+            print("[planner] WARNING no pude cargar adapter:", e)
+
+    base.eval()
+    _model = base
+
+    # Usa el chat_template del adapter si existe
+    try:
+        ct = Path(ADAPTER_DIR, "chat_template.jinja")
+        if ct.is_file():
+            _tokenizer.chat_template = ct.read_text(encoding="utf-8")
+    except Exception:
+        pass
+
     devmap = getattr(_model, "hf_device_map", None)
     if devmap:
         print("[planner] hf_device_map:", devmap)
-    
+
+    # Warm-up (corto) para evitar la 1ª llamada lenta
+    try:
+        prompt = _build_prompt("ping", {})
+        ii = _tokenizer(prompt, return_tensors="pt")
+        tgt = _inputs_device_for(_model)
+        ii = {k: v.to(tgt) for k, v in ii.items()}
+        with torch.inference_mode():
+            _ = _model.generate(
+                **ii,
+                max_new_tokens=4,
+                do_sample=True, temperature=0.25, top_p=0.9, repetition_penalty=1.05,
+                use_cache=False,
+                eos_token_id=_tokenizer.eos_token_id,
+                pad_token_id=_tokenizer.pad_token_id
+            )
+    except Exception:
+        pass
+
+# Expuesto para /health
+def model_info() -> Dict[str, Any]:
+    ensure_loaded()
+    return {
+        "model_base": MODEL_ID,
+        "adapter_dir": ADAPTER_DIR or None,
+        "device_map": getattr(_model, "hf_device_map", None),
+        "max_new_tokens": MAX_NEW,
+    }
 
 # ───────────── catálogo / prompt ───────────────
 def _available_actions() -> List[Dict[str, Any]]:
@@ -94,7 +146,7 @@ def _available_actions() -> List[Dict[str, Any]]:
         acts.append({"action": name, "args": list(fields.keys())})
     return acts
 
-def _action_names() -> List[str]:
+def _action_names_only() -> List[str]:
     filters = {s.strip() for s in os.environ.get("TAD_ACTIONS_FILTER", "").split(",") if s.strip()}
     names = list(ACTION_SCHEMAS.keys())
     if filters:
@@ -105,20 +157,46 @@ _SYSTEM = (
     "You are TAD Agent, an expert Autodesk Revit planner.\n"
     "Return ONE JSON object only. No markdown, no code fences, no prose.\n"
     "JSON schema:{\"version\":\"tad-dsl/0.2\",\"context\":{\"revit_version\":\"2025\",\"units\":\"SI\"},"
-    "\"plan\":[{\"action\":\"<action>\",\"args\":{...},\"as\":\"optional-alias\"}]}.\n"
-    "Use SI units consistently. If information is missing, add an initial 'get' step.\n"
-    "Use only action names from the catalog. Each step MUST have `action` and `args` (object).\n"
-    "Your output MUST be STRICT JSON (double quotes, true/false/null, no trailing commas).\n"
-    "Never output placeholders like \"<action>\" or empty args. Begin with '{' and end with '}'.\n"
+    "\"plan\":[{\"action\":\"<action>\",\"args\":{...}}]}.\n"
+    "\n"
+    "CRITICAL RULES:\n"
+    "1) Choose an action whose NAME directly matches the user's MAIN intent.\n"
+    "   Examples of mapping:\n"
+    "   - 'muro', 'wall' -> use a 'walls.*' action (typically walls.create_linear)\n"
+    "   - 'nivel', 'level' -> use 'levels.create'\n"
+    "   - 'vista de plano', 'plan view' -> use 'views.create_plan'\n"
+    "2) NEVER create or rename levels unless the prompt EXPLICITLY asks for a level.\n"
+    "3) Each step MUST have `action` and `args` (object). No placeholders like '<action>'.\n"
+    "4) Use ONLY action names from the provided catalog. Use SI units.\n"
+    "5) If the user provides coordinates or dimensions, pass them as numeric args in meters.\n"
+    "\n"
+    "Mini-examples (follow these exactly):\n"
+    "USER: 'Dibuja un muro de 5 m en el nivel N1, tipo \"Muro Genérico 200\" de (0,0) a (5,0).'\n"
+    "OUTPUT: {\"version\":\"tad-dsl/0.2\",\"context\":{\"revit_version\":\"2025\",\"units\":\"SI\"},\"plan\":[\n"
+    "  {\"action\":\"walls.create_linear\",\"args\":{\"start\":[0,0,0],\"end\":[5,0,0],\"level\":\"N1\",\"type\":\"Muro Genérico 200\",\"height\":3.0}}\n"
+    "]}\n"
+    "\n"
+    "USER: 'Crea un nivel llamado N1 a 3.50 m.'\n"
+    "OUTPUT: {\"version\":\"tad-dsl/0.2\",\"context\":{\"revit_version\":\"2025\",\"units\":\"SI\"},\"plan\":[\n"
+    "  {\"action\":\"levels.create\",\"args\":{\"name\":\"N1\",\"elevation\":3.5}}\n"
+    "]}\n"
+    "\n"
+    "Return ONLY the JSON object."
 )
 
 def _build_prompt(user_prompt: str, client_context: Dict[str, Any]) -> str:
+    names_only = _action_names_only()
     messages = [
-        {"role": "system", "content": _SYSTEM +
-            "\nAvailable actions:\n" + json.dumps({"available_actions": _available_actions()}, ensure_ascii=False) +
-            "\nContext:\n" + json.dumps({"client_context": client_context or {}}, ensure_ascii=False)
+        {"role": "system", "content":
+            _SYSTEM
+            + "\nAllowed action names:\n"
+            + json.dumps({"allowed_actions": names_only}, ensure_ascii=False)
+            + "\nAvailable actions (with args):\n"
+            + json.dumps({"available_actions": _available_actions()}, ensure_ascii=False)
+            + "\nContext:\n"
+            + json.dumps({"client_context": client_context or {}}, ensure_ascii=False)
         },
-        {"role": "user", "content": f'{user_prompt}\nReturn ONLY the JSON object.'}
+        {"role": "user", "content": f"{user_prompt}\nReturn ONLY the JSON object."}
     ]
     return _tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
 
@@ -129,8 +207,8 @@ def _find_balanced_json(s: str) -> str | None:
     start = s.find("{")
     if start == -1:
         return None
-    depth = 0
-    for i in range(start, len(s)):
+    depth, i = 0, start
+    while i < len(s):
         c = s[i]
         if c == "{":
             depth += 1
@@ -138,6 +216,7 @@ def _find_balanced_json(s: str) -> str | None:
             depth -= 1
             if depth == 0:
                 return s[start:i+1]
+        i += 1
     return None
 
 def _json_coerce(s: str) -> Dict[str, Any]:
@@ -181,8 +260,7 @@ def _normalize_plan(obj: Any) -> Dict[str, Any]:
     if "plan" not in obj:
         for k in ("steps", "actions", "tasks", "procedure", "commands", "sequence"):
             if k in obj:
-                obj["plan"] = obj.pop(k)
-                break
+                obj["plan"] = obj.pop(k); break
     if "plan" in obj and isinstance(obj["plan"], dict):
         obj["plan"] = [obj["plan"]]
     if "plan" not in obj or not isinstance(obj["plan"], list):
@@ -218,142 +296,24 @@ def _normalize_plan(obj: Any) -> Dict[str, Any]:
     obj["plan"] = cleaned
     return obj
 
-# ───────────── helpers de intención/parseo ─────
-_SP_FLOAT = re.compile(r"(-?\d+(?:[.,]\d+)?)")
-
-def _to_float_m(s: str) -> float:
-    s = s.strip().lower().replace(",", ".")
-    return float(s)
-
-def _intent_from_prompt(prompt: str) -> str:
-    p = prompt.lower()
-    if "nivel" in p or "level" in p:
-        return "level"
-    if "muro" in p or "wall" in p:
-        return "wall"
-    return "unknown"
-
-def _choose_action(intent: str, names: List[str]) -> str | None:
-    keymap = {
-        "level": ["level", "create_level", "add_level"],
-        "wall": ["wall", "create_wall", "draw_wall"],
-    }
-    keys = keymap.get(intent, [])
-    for k in keys:
-        for n in names:
-            if k in n.lower():
-                return n
-    if names:
-        return difflib.get_close_matches(intent, names, n=1, cutoff=0.0)[0] if intent != "unknown" else names[0]
-    return None
-
-def _fill_level_args(prompt: str, action: str) -> Dict[str, Any]:
-    name = None
-    m_name = re.search(r"nivel\s+(?:llamado|con\s+nombre)\s+([A-Za-z0-9_-]+)", prompt, flags=re.I)
-    if m_name:
-        name = m_name.group(1)
-    m_elev = re.search(r"a\s+(" + _SP_FLOAT.pattern + r")\s*m", prompt, flags=re.I)
-    elev = _to_float_m(m_elev.group(1)) if m_elev else 0.0
-
-    fields = list(getattr(ACTION_SCHEMAS[action], "model_fields", {}).keys())
-    out: Dict[str, Any] = {}
-    # nombre
-    for cand in ("name", "level_name", "id", "label"):
-        if cand in fields and name is not None:
-            out[cand] = name
-            break
-    # elevación
-    for cand in ("elevation_m", "elevation", "height_m", "z_m"):
-        if cand in fields:
-            out[cand] = elev
-            break
-    return out
-
-# ───────────── canonicalización de args ────────
-_SYNONYMS: Dict[str, Dict[str, List[str]]] = {
-    "levels.create": {
-        "level_name": ["name", "label"],
-        "name": ["level_name", "label"],
-        "elevation_m": ["elevation", "z_m", "height_m"],
-    },
-}
-
-def _canonicalize_step(step: Dict[str, Any]) -> Dict[str, Any]:
-    action = step.get("action")
-    if action not in ACTION_SCHEMAS:
-        if step.get("as") == "optional-alias":
-            step.pop("as", None)
-        return step
-
-    schema = ACTION_SCHEMAS[action]
-    fields = list(getattr(schema, "model_fields", {}).keys())
-
-    args_in = step.get("args", {}) or {}
-    if not isinstance(args_in, dict):
-        try:
-            args_in = dict(args_in)
-        except Exception:
-            args_in = {}
-
-    syn = _SYNONYMS.get(action, {})
-    mapped: Dict[str, Any] = {}
-    used_keys = set()
-    for dest, alts in syn.items():
-        if dest in args_in:
-            mapped[dest] = args_in[dest]; used_keys.add(dest)
-            continue
-        for k in alts:
-            if k in args_in:
-                mapped[dest] = args_in[k]; used_keys.add(k)
-                break
-
-    for k, v in args_in.items():
-        if k in fields:
-            mapped.setdefault(k, v)
-            used_keys.add(k)
-
-    cleaned = {k: v for k, v in mapped.items() if k in fields}
-
-    if step.get("as") == "optional-alias":
-        step.pop("as", None)
-
-    step["args"] = cleaned
-    return step
-
-def _canonicalize_plan(plan: Dict[str, Any]) -> Dict[str, Any]:
-    steps = plan.get("plan", [])
-    if isinstance(steps, list):
-        plan["plan"] = [_canonicalize_step(s) if isinstance(s, dict) else s for s in steps]
-    return plan
-
-# ───────────── reparador (elige acción/args) ───
-def _repair_plan(plan: Dict[str, Any], prompt: str) -> Dict[str, Any]:
-    available = _action_names()
-    changed = False
-    intent = _intent_from_prompt(prompt)
-
+# ───────────── validación ligera (sin “parches”) ─────────
+def _validate_against_schema(plan: Dict[str, Any]) -> Dict[str, Any]:
+    steps = []
     for step in plan.get("plan", []):
+        if not isinstance(step, dict):
+            continue
         action = step.get("action", "")
-        if not action or action == "<action>" or action not in available:
-            best = _choose_action(intent, available)
-            if best:
-                step["action"] = best
-                changed = True
-
-        args = step.get("args", {})
-        if not isinstance(args, dict):
-            args = {}
-        if not args:
-            if step["action"] in available and intent == "level":
-                guessed = _fill_level_args(prompt, step["action"])
-                if guessed:
-                    args.update(guessed)
-                    changed = True
-        step["args"] = args
-
-    if changed and DEBUG:
-        print("[planner][REPAIRED PLAN] ", json.dumps(plan, ensure_ascii=False))
-
+        if not action:
+            continue
+        args = step.get("args") or {}
+        if action in ACTION_SCHEMAS and isinstance(args, dict):
+            fields = set(getattr(ACTION_SCHEMAS[action], "model_fields", {}).keys())
+            args = {k: v for k, v in args.items() if k in fields}
+        step["args"] = args if isinstance(args, dict) else {}
+        steps.append(step)
+    if not steps:
+        raise ValueError("Empty/invalid plan after validation.")
+    plan["plan"] = steps
     return plan
 
 # ───────────── device de inputs ────────────────
@@ -363,10 +323,7 @@ def _inputs_device_for(model) -> torch.device:
         key = "model.embed_tokens"
         if key in devmap:
             tgt = devmap[key]
-            if isinstance(tgt, int):
-                return torch.device(f"cuda:{tgt}")
-            if isinstance(tgt, str):
-                return torch.device(tgt)
+            return torch.device(f"cuda:{tgt}") if isinstance(tgt, int) else torch.device(tgt)
         gpu_ids = [v for v in devmap.values() if isinstance(v, int)]
         if gpu_ids:
             return torch.device(f"cuda:{min(gpu_ids)}")
@@ -391,15 +348,16 @@ def make_plan(user_prompt: str, client_context: Dict[str, Any] | None = None) ->
         gen = _model.generate(
             **inputs,
             max_new_tokens=MAX_NEW,
-            do_sample=False,
-            temperature=0.0,
+            do_sample=True,                 # <- sampling suave para no “copiar” el ejemplo
+            temperature=0.6,
+            top_p=0.9,
+            repetition_penalty=1.05,
             use_cache=False,
             eos_token_id=_tokenizer.eos_token_id,
             pad_token_id=pad_id,
         )
 
     out = _tokenizer.decode(gen[0], skip_special_tokens=True)
-    # Intenta quedarte con la última “salida” del asistente en chat_template
     completion = out[out.rfind("assistant") + len("assistant"):].strip() if "assistant" in out else out
     completion = completion.replace("```json", "").replace("```", "").strip()
 
@@ -412,6 +370,5 @@ def make_plan(user_prompt: str, client_context: Dict[str, Any] | None = None) ->
         raw = _extract_json(out)
 
     plan = _normalize_plan(raw)
-    plan = _repair_plan(plan, user_prompt)     # completa acción/args mínimos
-    plan = _canonicalize_plan(plan)            # aplica sinónimos + filtra a schema
+    plan = _validate_against_schema(plan)  # sin “parches”
     return plan
