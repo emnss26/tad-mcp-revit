@@ -6,6 +6,7 @@ from typing import Any, Dict, List
 import torch
 import psutil
 
+# ───────────────── env / paths ─────────────────
 REPO_ROOT = Path(__file__).resolve().parents[2]
 try:
     from dotenv import load_dotenv
@@ -13,7 +14,7 @@ try:
 except Exception:
     pass
 
-# Menos fragmentación (algunas builds lo ignoran)
+# Evitar fragmentación (algunas builds lo ignoran)
 os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True,max_split_size_mb:128")
 os.environ.setdefault("TRANSFORMERS_NO_ADVISORY_WARNINGS", "1")
 
@@ -24,11 +25,10 @@ if str(REPO_ROOT) not in sys.path:
 from shared.tad_dsl.tool_definitions import ACTION_SCHEMAS
 
 # ───────────────── config ─────────────────
-MODEL_ID       = os.environ.get("MODEL_ID", "microsoft/Phi-3-mini-4k-instruct")
-ADAPTER_DIR    = os.environ.get("ADAPTER_DIR", "").strip()
-MAX_NEW        = int(os.environ.get("TAD_MAX_NEW", "96"))
-DEBUG          = os.environ.get("TAD_DEBUG", "") == "1"
-USE_CONSTRAINED= os.environ.get("TAD_CONSTRAINED", "1") == "1"   # <— ON por defecto
+MODEL_ID    = os.environ.get("MODEL_ID", "microsoft/Phi-3-mini-4k-instruct")
+ADAPTER_DIR = os.environ.get("ADAPTER_DIR", "").strip()  # p.ej.: out/phi3-mcp-lora
+MAX_NEW     = int(os.environ.get("TAD_MAX_NEW", "96"))
+DEBUG       = os.environ.get("TAD_DEBUG", "") == "1"
 
 _tokenizer = None
 _model = None
@@ -87,7 +87,6 @@ def ensure_loaded():
     # Aplica LoRA si existe
     if ADAPTER_DIR and os.path.isdir(ADAPTER_DIR):
         try:
-            from peft import PeftModel
             base = PeftModel.from_pretrained(base, ADAPTER_DIR)
             print("[planner] adapter:", ADAPTER_DIR)
         except Exception as e:
@@ -108,7 +107,7 @@ def ensure_loaded():
     if devmap:
         print("[planner] hf_device_map:", devmap)
 
-    # Warm-up (corto)
+    # Warm-up (corto) para evitar la 1ª llamada lenta
     try:
         prompt = _build_prompt("ping", {})
         ii = _tokenizer(prompt, return_tensors="pt")
@@ -118,7 +117,7 @@ def ensure_loaded():
             _ = _model.generate(
                 **ii,
                 max_new_tokens=4,
-                do_sample=False,
+                do_sample=True, temperature=0.25, top_p=0.9, repetition_penalty=1.05,
                 use_cache=False,
                 eos_token_id=_tokenizer.eos_token_id,
                 pad_token_id=_tokenizer.pad_token_id
@@ -134,7 +133,6 @@ def model_info() -> Dict[str, Any]:
         "adapter_dir": ADAPTER_DIR or None,
         "device_map": getattr(_model, "hf_device_map", None),
         "max_new_tokens": MAX_NEW,
-        "constrained": USE_CONSTRAINED,
     }
 
 # ───────────── catálogo / prompt ───────────────
@@ -148,7 +146,7 @@ def _available_actions() -> List[Dict[str, Any]]:
         acts.append({"action": name, "args": list(fields.keys())})
     return acts
 
-def _action_names() -> List[str]:
+def _action_names_only() -> List[str]:
     filters = {s.strip() for s in os.environ.get("TAD_ACTIONS_FILTER", "").split(",") if s.strip()}
     names = list(ACTION_SCHEMAS.keys())
     if filters:
@@ -160,67 +158,47 @@ _SYSTEM = (
     "Return ONE JSON object only. No markdown, no code fences, no prose.\n"
     "JSON schema:{\"version\":\"tad-dsl/0.2\",\"context\":{\"revit_version\":\"2025\",\"units\":\"SI\"},"
     "\"plan\":[{\"action\":\"<action>\",\"args\":{...}}]}.\n"
+    "\n"
     "CRITICAL RULES:\n"
-    "1) Choose an action whose NAME directly matches the user's MAIN intent:\n"
-    "   - 'muro', 'wall' -> use 'walls.*' (typically walls.create_linear)\n"
+    "1) Choose an action whose NAME directly matches the user's MAIN intent.\n"
+    "   Examples of mapping:\n"
+    "   - 'muro', 'wall' -> use a 'walls.*' action (typically walls.create_linear)\n"
     "   - 'nivel', 'level' -> use 'levels.create'\n"
-    "   - 'vista de plano', 'plan view' -> 'views.create_plan'\n"
-    "2) NEVER create/rename levels unless explicitly asked.\n"
-    "3) Each step MUST have `action` and `args` (object). No placeholders.\n"
+    "   - 'vista de plano', 'plan view' -> use 'views.create_plan'\n"
+    "2) NEVER create or rename levels unless the prompt EXPLICITLY asks for a level.\n"
+    "3) Each step MUST have `action` and `args` (object). No placeholders like '<action>'.\n"
     "4) Use ONLY action names from the provided catalog. Use SI units.\n"
-    "5) If the user gives dimensions/coords, pass numeric args in meters.\n"
+    "5) If the user provides coordinates or dimensions, pass them as numeric args in meters.\n"
+    "\n"
+    "Mini-examples (follow these exactly):\n"
+    "USER: 'Dibuja un muro de 5 m en el nivel N1, tipo \"Muro Genérico 200\" de (0,0) a (5,0).'\n"
+    "OUTPUT: {\"version\":\"tad-dsl/0.2\",\"context\":{\"revit_version\":\"2025\",\"units\":\"SI\"},\"plan\":[\n"
+    "  {\"action\":\"walls.create_linear\",\"args\":{\"start\":[0,0,0],\"end\":[5,0,0],\"level\":\"N1\",\"type\":\"Muro Genérico 200\",\"height\":3.0}}\n"
+    "]}\n"
+    "\n"
+    "USER: 'Crea un nivel llamado N1 a 3.50 m.'\n"
+    "OUTPUT: {\"version\":\"tad-dsl/0.2\",\"context\":{\"revit_version\":\"2025\",\"units\":\"SI\"},\"plan\":[\n"
+    "  {\"action\":\"levels.create\",\"args\":{\"name\":\"N1\",\"elevation\":3.5}}\n"
+    "]}\n"
+    "\n"
     "Return ONLY the JSON object."
 )
 
 def _build_prompt(user_prompt: str, client_context: Dict[str, Any]) -> str:
+    names_only = _action_names_only()
     messages = [
-        {"role": "system", "content": _SYSTEM +
-            "\nAvailable actions:\n" + json.dumps({"available_actions": _available_actions()}, ensure_ascii=False) +
-            "\nContext:\n" + json.dumps({"client_context": client_context or {}}, ensure_ascii=False)
+        {"role": "system", "content":
+            _SYSTEM
+            + "\nAllowed action names:\n"
+            + json.dumps({"allowed_actions": names_only}, ensure_ascii=False)
+            + "\nAvailable actions (with args):\n"
+            + json.dumps({"available_actions": _available_actions()}, ensure_ascii=False)
+            + "\nContext:\n"
+            + json.dumps({"client_context": client_context or {}}, ensure_ascii=False)
         },
-        {"role": "user", "content": f'{user_prompt}\nReturn ONLY the JSON object.'}
+        {"role": "user", "content": f"{user_prompt}\nReturn ONLY the JSON object."}
     ]
     return _tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
-
-# ───────────── constrained JSON schema ─────────
-def _build_constrained_schema() -> Dict[str, Any]:
-    """Schema con enum de acciones válidas para forzar elección correcta."""
-    enum_actions = _action_names()
-    if not enum_actions:
-        # fallback a algo neutro para no romper
-        enum_actions = ["levels.create"]
-
-    schema: Dict[str, Any] = {
-        "type": "object",
-        "properties": {
-            "version": {"type": "string", "const": "tad-dsl/0.2"},
-            "context": {
-                "type": "object",
-                "properties": {
-                    "revit_version": {"type": "string"},
-                    "units": {"type": "string"}
-                },
-                "required": ["revit_version", "units"],
-                "additionalProperties": True
-            },
-            "plan": {
-                "type": "array",
-                "minItems": 1,
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "action": {"type": "string", "enum": enum_actions},
-                        "args":   {"type": "object"}
-                    },
-                    "required": ["action", "args"],
-                    "additionalProperties": True
-                }
-            }
-        },
-        "required": ["plan"],
-        "additionalProperties": True
-    }
-    return schema
 
 # ───────────── extracción / normalización ──────
 _JSON_RE = re.compile(r"\{.*\}", re.DOTALL)
@@ -232,7 +210,8 @@ def _find_balanced_json(s: str) -> str | None:
     depth, i = 0, start
     while i < len(s):
         c = s[i]
-        if c == "{": depth += 1
+        if c == "{":
+            depth += 1
         elif c == "}":
             depth -= 1
             if depth == 0:
@@ -297,25 +276,31 @@ def _normalize_plan(obj: Any) -> Dict[str, Any]:
 
     cleaned: List[Dict[str, Any]] = []
     for step in obj["plan"]:
-        if not isinstance(step, dict): continue
+        if not isinstance(step, dict):
+            continue
         action = step.get("action") or step.get("tool") or step.get("name")
         args = step.get("args") or step.get("parameters") or step.get("params") or {}
+        alias = step.get("as") or step.get("id") or step.get("alias")
         if not isinstance(args, dict):
-            try: args = dict(args)
-            except Exception: args = {}
+            try:
+                args = dict(args)
+            except Exception:
+                args = {}
         if action:
             item = {"action": str(action), "args": args}
+            if alias:
+                item["as"] = str(alias)
             cleaned.append(item)
     if not cleaned:
         raise ValueError("Empty plan.")
     obj["plan"] = cleaned
     return obj
 
+# ───────────── validación ligera (sin “parches”) ─────────
 def _validate_against_schema(plan: Dict[str, Any]) -> Dict[str, Any]:
-    """No inventa nada. Solo elimina pasos con action vacío y filtra llaves a las válidas si existen."""
     steps = []
     for step in plan.get("plan", []):
-        if not isinstance(step, dict): 
+        if not isinstance(step, dict):
             continue
         action = step.get("action", "")
         if not action:
@@ -323,8 +308,7 @@ def _validate_against_schema(plan: Dict[str, Any]) -> Dict[str, Any]:
         args = step.get("args") or {}
         if action in ACTION_SCHEMAS and isinstance(args, dict):
             fields = set(getattr(ACTION_SCHEMAS[action], "model_fields", {}).keys())
-            # no eliminamos llaves extra agresivamente; solo si quieres, descomenta:
-            # args = {k: v for k, v in args.items() if k in fields}
+            args = {k: v for k, v in args.items() if k in fields}
         step["args"] = args if isinstance(args, dict) else {}
         steps.append(step)
     if not steps:
@@ -336,48 +320,35 @@ def _validate_against_schema(plan: Dict[str, Any]) -> Dict[str, Any]:
 def _inputs_device_for(model) -> torch.device:
     devmap = getattr(model, "hf_device_map", None)
     if devmap:
-        key = "model.embed_tokens" if "model.embed_tokens" in devmap else next(iter(devmap.keys()))
-        tgt = devmap.get(key)
-        if isinstance(tgt, int):
-            return torch.device(f"cuda:{tgt}")
-        if isinstance(tgt, str):
-            return torch.device(tgt)
-        # busca cualquier cuda
+        key = "model.embed_tokens"
+        if key in devmap:
+            tgt = devmap[key]
+            return torch.device(f"cuda:{tgt}") if isinstance(tgt, int) else torch.device(tgt)
+        gpu_ids = [v for v in devmap.values() if isinstance(v, int)]
+        if gpu_ids:
+            return torch.device(f"cuda:{min(gpu_ids)}")
         for v in devmap.values():
             if isinstance(v, str) and v.startswith("cuda"):
                 return torch.device(v)
         return torch.device("cpu")
     return torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-# ───────────── generación ──────────────────────
-def _generate_constrained(prompt: str) -> Dict[str, Any]:
-    """Genera estrictamente un JSON con enum de acciones válidas."""
-    from jsonformer import Jsonformer
-    schema = _build_constrained_schema()
-    jf = Jsonformer(
-        model=_model,
-        tokenizer=_tokenizer,
-        json_schema=schema,
-        prompt=prompt,
-        max_array_length=8,
-        max_number_tokens=8,
-    )
-    obj = jf()  # devuelve un dict (JSON ya parseado)
-    if DEBUG:
-        print("[planner][JSONFORMER OUT]", json.dumps(obj, ensure_ascii=False)[:800])
-    return obj
+# ───────────── planificación ───────────────────
+def make_plan(user_prompt: str, client_context: Dict[str, Any] | None = None) -> Dict[str, Any]:
+    ensure_loaded()
+    prompt = _build_prompt(user_prompt, client_context or {})
 
-def _generate_free(prompt: str) -> Dict[str, Any]:
-    """Generación estándar + parseo."""
     inputs = _tokenizer(prompt, return_tensors="pt")
     target = _inputs_device_for(_model)
     inputs = {k: v.to(target) for k, v in inputs.items()}
+
     pad_id = _tokenizer.pad_token_id or _tokenizer.eos_token_id
+
     with torch.inference_mode():
         gen = _model.generate(
             **inputs,
             max_new_tokens=MAX_NEW,
-            do_sample=True,            # un poco de libertad
+            do_sample=True,                 # <- sampling suave para no “copiar” el ejemplo
             temperature=0.6,
             top_p=0.9,
             repetition_penalty=1.05,
@@ -385,28 +356,19 @@ def _generate_free(prompt: str) -> Dict[str, Any]:
             eos_token_id=_tokenizer.eos_token_id,
             pad_token_id=pad_id,
         )
+
     out = _tokenizer.decode(gen[0], skip_special_tokens=True)
     completion = out[out.rfind("assistant") + len("assistant"):].strip() if "assistant" in out else out
     completion = completion.replace("```json", "").replace("```", "").strip()
+
     if DEBUG:
         print("\n[planner][RAW COMPLETION]\n", completion[:1000], "\n")
+
     try:
-        return _extract_json(completion)
+        raw = _extract_json(completion)
     except Exception:
-        return _extract_json(out)
-
-# ───────────── planificación ───────────────────
-def make_plan(user_prompt: str, client_context: Dict[str, Any] | None = None) -> Dict[str, Any]:
-    ensure_loaded()
-    prompt = _build_prompt(user_prompt, client_context or {})
-
-    try:
-        raw = _generate_constrained(prompt) if USE_CONSTRAINED else _generate_free(prompt)
-    except Exception as e:
-        if DEBUG:
-            print("[planner] constrained failed, falling back:", repr(e))
-        raw = _generate_free(prompt)
+        raw = _extract_json(out)
 
     plan = _normalize_plan(raw)
-    plan = _validate_against_schema(plan)
+    plan = _validate_against_schema(plan)  # sin “parches”
     return plan
